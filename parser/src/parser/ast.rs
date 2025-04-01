@@ -2,11 +2,13 @@
 //    All - *
 //    From
 //      Identifier - Table
-use super::lexer::Token;
+use std::iter::Peekable;
+
 use logos::Lexer;
 use rowan::{GreenNodeBuilder, NodeOrToken};
-use std::iter::Peekable;
 use thiserror::Error;
+
+use super::lexer::Token;
 
 #[derive(Error, Debug)]
 pub enum AstError {
@@ -73,12 +75,7 @@ pub struct Parser {
 
 impl Parser {
     fn peek(&mut self) -> Option<SyntaxKind> {
-        while self
-            .iter
-            .peek()
-            .map(|&(t, _)| t == WHITESPACE)
-            .unwrap_or(false)
-        {
+        while self.iter.peek().map(|&(t, _)| t == WHITESPACE).unwrap_or(false) {
             self.bump();
         }
         self.iter.peek().map(|&(t, _)| t)
@@ -94,38 +91,40 @@ impl Parser {
     fn handle_val(&mut self) -> Result<(), AstError> {
         match self.peek().unwrap() {
             SELECT => {
-                self.builder
-                    .start_node_at(self.builder.checkpoint(), SELECT.into());
+                self.builder.start_node_at(self.builder.checkpoint(), SELECT.into());
                 self.next();
                 while self.peek() != Some(FROM.into()) {
                     self.bump();
                 }
 
-                self.builder
-                    .start_node_at(self.builder.checkpoint(), FROM.into());
+                self.builder.start_node_at(self.builder.checkpoint(), FROM.into());
                 self.next();
 
                 while let Some(token) = self.peek() {
-                    if token == COMMA {
-                        self.next();
-                        if self.peek() != Some(IDENTIFIER) {
-                            return Err(AstError::TrailingComma);
-                        }
-                        continue;
-                    }
+                    match token {
+                        COMMA => {
+                            self.next();
 
-                    if token != IDENTIFIER {
-                        return Err(AstError::ExpectedType(IDENTIFIER, token));
-                    }
+                            if self.peek() != Some(IDENTIFIER) {
+                                return Err(AstError::TrailingComma);
+                            }
 
-                    self.bump();
+                            continue;
+                        },
+                        IDENTIFIER => {
+                            self.bump();
+                        },
+                        _ => {
+                            return Err(AstError::ExpectedType(IDENTIFIER, token));
+                        },
+                    }
                 }
 
                 self.builder.finish_node();
 
                 self.builder.finish_node();
-            }
-            _ => {}
+            },
+            _ => {},
         }
 
         Ok(())
@@ -148,7 +147,7 @@ impl Parser {
             match token {
                 Ok(t) => {
                     nodes.push(t.to_syntax());
-                }
+                },
                 Err(_) => return Err(AstError::InvalidToken(lex.slice().to_string())),
             }
         }

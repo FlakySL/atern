@@ -1,8 +1,7 @@
-use super::parser::{
-    ast::{AstError, Parser, SyntaxNode},
-    lexer::Token,
-};
 use logos::Logos;
+
+use super::parser::ast::{AstError, Parser, SyntaxNode};
+use super::parser::lexer::Token;
 
 pub struct SqlBuilder {
     code: String,
