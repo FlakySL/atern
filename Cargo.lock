@@ -5,21 +5,16 @@ version = 4
 [[package]]
 name = "atern"
 version = "0.1.0"
+dependencies = [
+ "rowan",
+ "sql_parser",
+]
 
 [[package]]
 name = "beef"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3a8241f3ebb85c056b509d4327ad0358fbbba6ffb340bf388f26350aeda225b1"
-
-[[package]]
-name = "cli"
-version = "0.1.0"
-dependencies = [
- "logos",
- "rowan",
- "thiserror",
-]
 
 [[package]]
 name = "countme"
@@ -135,6 +130,15 @@ name = "semver"
 version = "1.0.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "56e6fa9c48d24d85fb3de5ad847117517440f6beceb7798af16b4a87d616b8d0"
+
+[[package]]
+name = "sql_parser"
+version = "0.1.0"
+dependencies = [
+ "logos",
+ "rowan",
+ "thiserror",
+]
 
 [[package]]
 name = "syn"

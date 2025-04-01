@@ -8,6 +8,7 @@ use logos::Lexer;
 use rowan::{GreenNodeBuilder, NodeOrToken};
 use thiserror::Error;
 
+use super::utils::select::process_select;
 use super::lexer::Token;
 
 #[derive(Error, Debug)]
@@ -69,61 +70,28 @@ pub type SyntaxToken = rowan::SyntaxToken<Lang>;
 pub type SyntaxElement = NodeOrToken<SyntaxNode, SyntaxToken>;
 
 pub struct Parser {
-    builder: GreenNodeBuilder<'static>,
+    pub builder: GreenNodeBuilder<'static>,
     iter: Peekable<std::vec::IntoIter<(SyntaxKind, String)>>,
 }
 
 impl Parser {
-    fn peek(&mut self) -> Option<SyntaxKind> {
+    pub fn peek(&mut self) -> Option<SyntaxKind> {
         while self.iter.peek().map(|&(t, _)| t == WHITESPACE).unwrap_or(false) {
             self.bump();
         }
         self.iter.peek().map(|&(t, _)| t)
     }
-    fn next(&mut self) {
+    pub fn next(&mut self) {
         self.iter.next();
     }
-    fn bump(&mut self) {
+    pub fn bump(&mut self) {
         if let Some((token, string)) = self.iter.next() {
             self.builder.token(token.into(), string.as_str());
         }
     }
     fn handle_val(&mut self) -> Result<(), AstError> {
         match self.peek().unwrap() {
-            SELECT => {
-                self.builder.start_node_at(self.builder.checkpoint(), SELECT.into());
-                self.next();
-                while self.peek() != Some(FROM.into()) {
-                    self.bump();
-                }
-
-                self.builder.start_node_at(self.builder.checkpoint(), FROM.into());
-                self.next();
-
-                while let Some(token) = self.peek() {
-                    match token {
-                        COMMA => {
-                            self.next();
-
-                            if self.peek() != Some(IDENTIFIER) {
-                                return Err(AstError::TrailingComma);
-                            }
-
-                            continue;
-                        },
-                        IDENTIFIER => {
-                            self.bump();
-                        },
-                        _ => {
-                            return Err(AstError::ExpectedType(IDENTIFIER, token));
-                        },
-                    }
-                }
-
-                self.builder.finish_node();
-
-                self.builder.finish_node();
-            },
+            SELECT => { process_select(self)?; },
             _ => {},
         }
 
