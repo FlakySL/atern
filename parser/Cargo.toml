@@ -1,0 +1,9 @@
+[package]
+name = "cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+logos = "0.15.0"
+rowan = "0.16.1"
+thiserror = "2.0.12"
