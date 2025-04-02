@@ -21,6 +21,10 @@ pub enum AstError {
 
     #[error("Expected {0} found {1}")]
     ExpectedType(SyntaxKind, SyntaxKind),
+
+
+    #[error("Unexpected Node {0}")]
+    UnexpectedNode(SyntaxKind),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -92,7 +96,7 @@ impl Parser {
     fn handle_val(&mut self) -> Result<(), AstError> {
         match self.peek().unwrap() {
             SELECT => { process_select(self)?; },
-            _ => {},
+            n => { return Err(AstError::UnexpectedNode(n)) },
         }
 
         Ok(())
