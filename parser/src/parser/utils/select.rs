@@ -4,6 +4,10 @@ use crate::parser::ast::{AstError, Parser};
 pub fn process_select(parser: &mut Parser) -> Result<(), AstError> {
     parser.builder.start_node_at(parser.builder.checkpoint(), SELECT.into());
     parser.next();
+    
+    if parser.peek() == Some(SEMICOLON) {
+        return Err(AstError::ExpectedBodyFor(SELECT));
+    }
 
     while parser.peek() != Some(FROM.into()) {
         parser.bump();

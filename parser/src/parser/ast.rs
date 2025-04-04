@@ -25,6 +25,9 @@ pub enum AstError {
 
     #[error("Unexpected Node {0}")]
     UnexpectedNode(SyntaxKind),
+
+    #[error("Expected Body for {0}")]
+    ExpectedBodyFor(SyntaxKind),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
