@@ -23,6 +23,12 @@ pub fn process_select(parser: &mut Parser) -> Result<(), AstError> {
 
                 continue;
             },
+            SEMICOLON => {
+                parser.builder.finish_node();
+                parser.builder.finish_node();
+                parser.next();
+                return Ok(());
+            },
             IDENTIFIER => {
                 parser.bump();
             },

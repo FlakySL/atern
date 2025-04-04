@@ -39,6 +39,7 @@ pub enum SyntaxKind {
     ALL,
     COMMA,
     NUMBER,
+    SEMICOLON,
     ROOT,
 }
 

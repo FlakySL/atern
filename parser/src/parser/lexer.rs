@@ -28,6 +28,9 @@ pub enum Token {
 
     #[token(",")]
     Comma,
+
+    #[token(";")]
+    Semicolon,
 }
 
 impl Token {
@@ -41,6 +44,7 @@ impl Token {
             Token::Text(t) => (SyntaxKind::TEXT, String::from(t)),
             Token::Number(n) => (SyntaxKind::NUMBER, String::from(n)),
             Token::Comma => (SyntaxKind::COMMA, String::from(",")),
+            Token::Semicolon => (SyntaxKind::SEMICOLON, String::from(";"))
         }
     }
 }
