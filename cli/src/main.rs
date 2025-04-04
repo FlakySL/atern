@@ -17,8 +17,7 @@ fn print(indent: usize, element: SyntaxElement) {
 }
 
 fn main() -> Result<(), AstError> {
-    println!("{}", SyntaxKind::TEXT.is_special());
-    let ast = SqlBuilder::from("SELECT * FROM TABLE; SELECT; * FROM USERS;".to_string())
+    let ast = SqlBuilder::from("SELECT * FROM TABLE; SELECT * FROM USERS;".to_string())
         .build()?;
     print(0, ast.into());
 
