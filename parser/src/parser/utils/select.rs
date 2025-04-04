@@ -9,11 +9,15 @@ pub fn process_select(parser: &mut Parser) -> Result<(), AstError> {
         return Err(AstError::ExpectedBodyFor(SELECT));
     }
 
-    while parser.peek() != Some(FROM.into()) {
+    while let Some(p) = parser.peek() {
+        if p.is_special() {
+            break;
+        }
         parser.bump();
     }
 
-    parser.builder.start_node_at(parser.builder.checkpoint(), FROM.into());
+    let val = parser.peek().unwrap().into();
+    parser.builder.start_node_at(parser.builder.checkpoint(), val);
     parser.next();
 
     while let Some(token) = parser.peek() {

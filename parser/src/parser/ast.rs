@@ -35,8 +35,10 @@ pub enum AstError {
 #[repr(u16)]
 pub enum SyntaxKind {
     WHITESPACE = 0,
+    
     SELECT,
     FROM,
+
     IDENTIFIER,
     TEXT,
     ALL,
@@ -44,6 +46,12 @@ pub enum SyntaxKind {
     NUMBER,
     SEMICOLON,
     ROOT,
+}
+
+impl SyntaxKind {
+    pub fn is_special(&self) -> bool {
+        (1..=2).contains(&(*self as u16))
+    }
 }
 
 impl std::fmt::Display for SyntaxKind {
