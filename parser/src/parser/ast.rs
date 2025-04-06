@@ -8,8 +8,9 @@ use logos::Lexer;
 use rowan::{GreenNodeBuilder, NodeOrToken};
 use thiserror::Error;
 
-use super::utils::select::process_select;
 use super::lexer::Token;
+use super::utils::create::process_create;
+use super::utils::select::process_select;
 
 #[derive(Error, Debug)]
 pub enum AstError {
@@ -21,7 +22,6 @@ pub enum AstError {
 
     #[error("Expected {0} found {1}")]
     ExpectedType(SyntaxKind, SyntaxKind),
-
 
     #[error("Unexpected Node {0}")]
     UnexpectedNode(SyntaxKind),
@@ -35,9 +35,13 @@ pub enum AstError {
 #[repr(u16)]
 pub enum SyntaxKind {
     WHITESPACE = 0,
-    
+
     SELECT,
     FROM,
+
+    CREATE,
+
+    TABLE,
 
     IDENTIFIER,
     TEXT,
@@ -45,12 +49,19 @@ pub enum SyntaxKind {
     COMMA,
     NUMBER,
     SEMICOLON,
+    PARENTHESES_START,
+    PARENTHESES_END,
+    VALUES,
+    DEFINITION,
     ROOT,
 }
 
 impl SyntaxKind {
-    pub fn is_special(&self) -> bool {
-        (1..=2).contains(&(*self as u16))
+    pub fn is_dql(&self) -> bool {
+        (2..=2).contains(&(*self as u16))
+    }
+    pub fn is_ddl(&self) -> bool {
+        (4..=4).contains(&(*self as u16))
     }
 }
 
@@ -97,6 +108,20 @@ impl Parser {
         }
         self.iter.peek().map(|&(t, _)| t)
     }
+    pub fn expect_peek<F>(&mut self, check: F, error: AstError) -> Result<(), AstError>
+    where
+        F: Fn(SyntaxKind) -> bool,
+    {
+        match self.peek() {
+            Some(t) if check(t) => {
+                self.bump();
+                Ok(())
+            },
+            Some(_t) => Err(error),
+            None => Err(AstError::ExpectedBodyFor(CREATE)),
+        }
+    }
+
     pub fn next(&mut self) {
         self.iter.next();
     }
@@ -107,8 +132,13 @@ impl Parser {
     }
     fn handle_val(&mut self) -> Result<(), AstError> {
         match self.peek().unwrap() {
-            SELECT => { process_select(self)?; },
-            n => { return Err(AstError::UnexpectedNode(n)) },
+            SELECT => {
+                process_select(self)?;
+            },
+            CREATE => {
+                process_create(self)?;
+            },
+            n => return Err(AstError::UnexpectedNode(n)),
         }
 
         Ok(())

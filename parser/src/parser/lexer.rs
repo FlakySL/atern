@@ -8,6 +8,12 @@ pub enum Token {
     #[regex("(?i)SELECT")]
     Select,
 
+    #[regex("(?i)CREATE")]
+    Create,
+
+    #[regex("(?i)TABLE")]
+    Table,
+
     #[regex("(?i)FROM")]
     From,
 
@@ -31,6 +37,12 @@ pub enum Token {
 
     #[token(";")]
     Semicolon,
+
+    #[token("(")]
+    ParenthesesStart,
+
+    #[token(")")]
+    ParenthesesEnd,
 }
 
 impl Token {
@@ -44,7 +56,11 @@ impl Token {
             Token::Text(t) => (SyntaxKind::TEXT, String::from(t)),
             Token::Number(n) => (SyntaxKind::NUMBER, String::from(n)),
             Token::Comma => (SyntaxKind::COMMA, String::from(",")),
-            Token::Semicolon => (SyntaxKind::SEMICOLON, String::from(";"))
+            Token::Semicolon => (SyntaxKind::SEMICOLON, String::from(";")),
+            Token::Create => (SyntaxKind::CREATE, String::from("CREATE")),
+            Token::Table => (SyntaxKind::TABLE, String::from("TABLE")),
+            Token::ParenthesesStart => (SyntaxKind::PARENTHESES_START, String::from("(")),
+            Token::ParenthesesEnd => (SyntaxKind::PARENTHESES_END, String::from(")")),
         }
     }
 }

@@ -4,13 +4,13 @@ use crate::parser::ast::{AstError, Parser};
 pub fn process_select(parser: &mut Parser) -> Result<(), AstError> {
     parser.builder.start_node_at(parser.builder.checkpoint(), SELECT.into());
     parser.next();
-    
+
     if parser.peek() == Some(SEMICOLON) {
         return Err(AstError::ExpectedBodyFor(SELECT));
     }
 
     while let Some(p) = parser.peek() {
-        if p.is_special() {
+        if p.is_dql() {
             break;
         }
         parser.bump();
