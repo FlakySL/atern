@@ -108,20 +108,6 @@ impl Parser {
         }
         self.iter.peek().map(|&(t, _)| t)
     }
-    pub fn expect_peek<F>(&mut self, check: F, error: AstError) -> Result<(), AstError>
-    where
-        F: Fn(SyntaxKind) -> bool,
-    {
-        match self.peek() {
-            Some(t) if check(t) => {
-                self.bump();
-                Ok(())
-            },
-            Some(_t) => Err(error),
-            None => Err(AstError::ExpectedBodyFor(CREATE)),
-        }
-    }
-
     pub fn next(&mut self) {
         self.iter.next();
     }
