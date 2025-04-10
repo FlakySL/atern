@@ -8,9 +8,10 @@ use logos::Lexer;
 use rowan::{GreenNodeBuilder, NodeOrToken};
 use thiserror::Error;
 
+use super::grammar::process_grammar;
+use super::grammar::Grammar::*;
+use super::grammar::GrammarType::*;
 use super::lexer::Token;
-use super::utils::create::process_create;
-use super::utils::select::process_select;
 
 #[derive(Error, Debug)]
 pub enum AstError {
@@ -53,6 +54,8 @@ pub enum SyntaxKind {
     PARENTHESES_END,
     VALUES,
     DEFINITION,
+
+    EMPTY,
     ROOT,
 }
 
@@ -119,10 +122,17 @@ impl Parser {
     fn handle_val(&mut self) -> Result<(), AstError> {
         match self.peek().unwrap() {
             SELECT => {
-                process_select(self)?;
-            },
-            CREATE => {
-                process_create(self)?;
+                process_grammar(
+                    self,
+                    SELECT,
+                    &[
+                        List(&[IDENTIFIER, ALL]),
+                        Loop(
+                            Box::from(Combo(true, &[Children(Type(FROM), &[List(&[IDENTIFIER])])])),
+                            SEMICOLON,
+                        ),
+                    ],
+                )?;
             },
             n => return Err(AstError::UnexpectedNode(n)),
         }

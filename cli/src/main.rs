@@ -18,7 +18,7 @@ fn print(indent: usize, element: SyntaxElement) {
 }
 
 fn main() -> Result<(), AstError> {
-    let ast = SqlBuilder::from("CREATE TABLE USERS".to_string()).build()?;
+    let ast = SqlBuilder::from("SELECT * FROM users".to_string()).build()?;
     print(0, ast.into());
 
     Ok(())
