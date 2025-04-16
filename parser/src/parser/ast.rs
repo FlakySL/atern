@@ -134,6 +134,9 @@ impl Parser {
                     ],
                 )?;
             },
+            CREATE => {
+                process_grammar(self, CREATE, &[])?;
+            },
             n => return Err(AstError::UnexpectedNode(n)),
         }
 

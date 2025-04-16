@@ -33,6 +33,23 @@ fn process_rule(rule: &Grammar, father: SyntaxKind, parser: &mut Parser) -> Resu
         Grammar::Children(start, body) => {
             process_children(start, body, father, parser)?;
         },
+        Grammar::Expect(token, consume) => {
+            process_expect(*token, *consume, parser)?;
+        }
+    }
+
+    Ok(())
+}
+
+fn process_expect(token: SyntaxKind, consume: bool, parser: &mut Parser) -> Result<(), AstError> {
+    if parser.peek() != Some(token) {
+        return Err(AstError::ExpectedType(token, parser.peek().unwrap_or(EMPTY)));
+    }
+
+    if consume {
+        parser.bump();
+    } else {
+        parser.next();
     }
 
     Ok(())
