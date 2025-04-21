@@ -128,7 +128,10 @@ impl Parser {
                     &[
                         List(&[IDENTIFIER, ALL]),
                         Loop(
-                            Box::from(Combo(true, &[Children(Type(FROM), &[List(&[IDENTIFIER])])])),
+                            Box::from(Combo(
+                                true,
+                                &[Children(Type(FROM), &[List(&[IDENTIFIER])]), Combo(true, &[])],
+                            )),
                             SEMICOLON,
                         ),
                     ],

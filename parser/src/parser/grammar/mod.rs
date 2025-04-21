@@ -1,4 +1,6 @@
+mod utils;
 mod process;
+
 pub use process::process_grammar;
 
 use super::ast::{AstError, Parser, SyntaxKind};
