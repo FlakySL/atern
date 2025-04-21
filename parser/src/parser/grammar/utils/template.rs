@@ -6,7 +6,7 @@ pub struct TemplateConfig {
     pub ignore: SyntaxKind
 }
 
-pub fn process_template(template: &[GrammarType], config: TemplateConfig, parser: &mut Parser) -> Result<(), AstError> {
+pub fn process_template(template: &[GrammarType], config: &TemplateConfig, parser: &mut Parser) -> Result<(), AstError> {
     parser.builder.start_node_at(parser.builder.checkpoint(), config.father.into());
 
     for rule in template {
