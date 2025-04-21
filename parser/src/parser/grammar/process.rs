@@ -2,6 +2,7 @@ use super::utils::children::process_children;
 use super::utils::combo::process_combo;
 use super::utils::expect::process_expect;
 use super::utils::list::process_list;
+use super::utils::template::process_template;
 use super::{Grammar, utils::r#loop::process_loop};
 
 use crate::parser::ast::SyntaxKind;
@@ -40,6 +41,9 @@ pub fn process_rule(rule: &Grammar, father: SyntaxKind, parser: &mut Parser) -> 
         },
         Grammar::Expect(token, consume) => {
             process_expect(*token, *consume, parser)?;
+        },
+        Grammar::Template(template, config) => {
+            process_template(template, config, parser)?;
         },
     }
 

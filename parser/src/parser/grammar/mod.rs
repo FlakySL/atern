@@ -2,16 +2,16 @@ mod utils;
 mod process;
 
 pub use process::process_grammar;
+use utils::template::TemplateConfig;
 
-use super::ast::{AstError, Parser, SyntaxKind};
-
-pub(super) type ChildrenFn = Box<dyn Fn(&mut Parser) -> Result<(), AstError>>;
+use super::ast::SyntaxKind;
 
 pub enum Grammar {
     List(&'static [SyntaxKind]), // separated by comma
     Children(GrammarType, &'static [Grammar]),
     Combo(bool, &'static [Grammar]),
     Expect(SyntaxKind, bool),
+    Template(&'static [GrammarType], TemplateConfig),
     Loop(Box<Grammar>, SyntaxKind),
 }
 

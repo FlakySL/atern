@@ -3,3 +3,4 @@ pub mod expect;
 pub mod children;
 pub mod combo;
 pub mod list;
+pub mod template;
