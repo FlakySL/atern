@@ -1,4 +1,7 @@
-use crate::parser::{ast::{AstError, Parser, SyntaxKind::{self, *}}, grammar::{process::process_rule, Grammar, GrammarType}};
+use crate::parser::ast::SyntaxKind::{self, *};
+use crate::parser::ast::{AstError, Parser};
+use crate::parser::grammar::process::process_rule;
+use crate::parser::grammar::{Grammar, GrammarType};
 
 pub fn process_children(
     start: &GrammarType,

@@ -2,11 +2,10 @@ use super::utils::children::process_children;
 use super::utils::combo::process_combo;
 use super::utils::expect::process_expect;
 use super::utils::list::process_list;
+use super::utils::r#loop::process_loop;
 use super::utils::template::process_template;
-use super::{Grammar, utils::r#loop::process_loop};
-
-use crate::parser::ast::SyntaxKind;
-use crate::parser::ast::{AstError, Parser};
+use super::Grammar;
+use crate::parser::ast::{AstError, Parser, SyntaxKind};
 
 pub fn process_grammar(
     parser: &mut Parser,
@@ -25,7 +24,11 @@ pub fn process_grammar(
     Ok(())
 }
 
-pub fn process_rule(rule: &Grammar, father: SyntaxKind, parser: &mut Parser) -> Result<(), AstError> {
+pub fn process_rule(
+    rule: &Grammar,
+    father: SyntaxKind,
+    parser: &mut Parser,
+) -> Result<(), AstError> {
     match rule {
         Grammar::List(t) => {
             process_list(t, father, parser)?;
@@ -49,4 +52,3 @@ pub fn process_rule(rule: &Grammar, father: SyntaxKind, parser: &mut Parser) -> 
 
     Ok(())
 }
-

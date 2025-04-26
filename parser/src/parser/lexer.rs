@@ -17,6 +17,9 @@ pub enum Token {
     #[regex("(?i)FROM")]
     From,
 
+    #[regex("(?i)WHERE")]
+    Where,
+
     #[regex(r#"(?:"[^"]*"|'[^']*')"#, |lex| {
         let content = lex.slice();
         content[1..content.len()-1].to_string()
@@ -34,6 +37,9 @@ pub enum Token {
 
     #[token(",")]
     Comma,
+
+    #[token("=")]
+    Equal,
 
     #[token(";")]
     Semicolon,
@@ -61,6 +67,8 @@ impl Token {
             Token::Table => (SyntaxKind::TABLE, String::from("TABLE")),
             Token::ParenthesesStart => (SyntaxKind::PARENTHESES_START, String::from("(")),
             Token::ParenthesesEnd => (SyntaxKind::PARENTHESES_END, String::from(")")),
+            Token::Equal => (SyntaxKind::EQUAL, String::from("=")),
+            Token::Where => (SyntaxKind::WHERE, String::from("WHERE"))
         }
     }
 }

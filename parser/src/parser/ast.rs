@@ -8,9 +8,9 @@ use logos::Lexer;
 use rowan::{GreenNodeBuilder, NodeOrToken};
 use thiserror::Error;
 
-use super::grammar::process_grammar;
 use super::grammar::Grammar::*;
 use super::grammar::GrammarType::*;
+use super::grammar::{process_grammar, TemplateConfig};
 use super::lexer::Token;
 
 #[derive(Error, Debug)]
@@ -39,6 +39,7 @@ pub enum SyntaxKind {
 
     SELECT,
     FROM,
+    WHERE,
 
     CREATE,
 
@@ -54,6 +55,8 @@ pub enum SyntaxKind {
     PARENTHESES_END,
     VALUES,
     DEFINITION,
+    EQUAL,
+    COMPARE,
 
     EMPTY,
     ROOT,
@@ -61,7 +64,7 @@ pub enum SyntaxKind {
 
 impl SyntaxKind {
     pub fn is_dql(&self) -> bool {
-        (2..=2).contains(&(*self as u16))
+        (2..=3).contains(&(*self as u16))
     }
     pub fn is_ddl(&self) -> bool {
         (4..=4).contains(&(*self as u16))
@@ -130,7 +133,27 @@ impl Parser {
                         Loop(
                             Box::from(Combo(
                                 true,
-                                &[Children(Type(FROM), &[List(&[IDENTIFIER])]), Combo(true, &[])],
+                                &[
+                                    Children(Type(FROM), &[List(&[IDENTIFIER])]),
+                                    Combo(
+                                        true,
+                                        &[Children(
+                                            Type(WHERE),
+                                            &[Template(
+                                                    &[
+                                                        Multi(&[NUMBER, IDENTIFIER]),
+                                                        Type(EQUAL),
+                                                        Multi(&[NUMBER, IDENTIFIER]),
+                                                    ],
+                                                    TemplateConfig {
+                                                        father: SyntaxKind::COMPARE,
+                                                        ignore: SyntaxKind::EQUAL,
+                                                    },
+                                                ),
+                                            ],
+                                        )],
+                                    ),
+                                ],
                             )),
                             SEMICOLON,
                         ),

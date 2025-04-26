@@ -1,8 +1,8 @@
-mod utils;
 mod process;
+mod utils;
 
 pub use process::process_grammar;
-use utils::template::TemplateConfig;
+pub use utils::template::TemplateConfig;
 
 use super::ast::SyntaxKind;
 
@@ -19,6 +19,7 @@ pub enum Grammar {
 pub enum GrammarType {
     Dql,
     Type(SyntaxKind),
+    Multi(&'static [SyntaxKind]),
 }
 
 impl PartialEq<SyntaxKind> for GrammarType {
@@ -26,6 +27,7 @@ impl PartialEq<SyntaxKind> for GrammarType {
         match self {
             Self::Dql => other.is_ddl(),
             Self::Type(t) => t == other,
+            Self::Multi(l) => l.contains(other),
         }
     }
 }

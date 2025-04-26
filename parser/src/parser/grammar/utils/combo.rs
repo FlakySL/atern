@@ -1,4 +1,6 @@
-use crate::parser::{ast::{AstError, Parser, SyntaxKind}, grammar::{process::process_rule, Grammar}};
+use crate::parser::ast::{AstError, Parser, SyntaxKind};
+use crate::parser::grammar::process::process_rule;
+use crate::parser::grammar::Grammar;
 
 pub fn process_combo(
     optional: bool,
@@ -16,7 +18,6 @@ pub fn process_combo(
             },
             Err(_) => {
                 good = false;
-                break;
             },
         };
     }
@@ -25,10 +26,9 @@ pub fn process_combo(
         return Err(AstError::ExpectedBodyFor(father));
     }
 
-    if !good {
+    if !good { 
         parser.next();
     }
 
     Ok(())
 }
-

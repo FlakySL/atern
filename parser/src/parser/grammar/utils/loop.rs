@@ -1,4 +1,6 @@
-use crate::parser::{ast::{AstError, Parser, SyntaxKind}, grammar::{process::process_rule, Grammar}};
+use crate::parser::ast::{AstError, Parser, SyntaxKind};
+use crate::parser::grammar::process::process_rule;
+use crate::parser::grammar::Grammar;
 
 pub fn process_loop(
     child: &Box<Grammar>,
@@ -12,5 +14,3 @@ pub fn process_loop(
 
     Ok(())
 }
-
-
