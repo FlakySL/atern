@@ -140,17 +140,16 @@ impl Parser {
                                         &[Children(
                                             Type(WHERE),
                                             &[Template(
-                                                    &[
-                                                        Multi(&[NUMBER, IDENTIFIER]),
-                                                        Type(EQUAL),
-                                                        Multi(&[NUMBER, IDENTIFIER]),
-                                                    ],
-                                                    TemplateConfig {
-                                                        father: SyntaxKind::COMPARE,
-                                                        ignore: SyntaxKind::EQUAL,
-                                                    },
-                                                ),
-                                            ],
+                                                &[
+                                                    Multi(&[NUMBER, IDENTIFIER]),
+                                                    Type(EQUAL),
+                                                    Multi(&[NUMBER, IDENTIFIER]),
+                                                ],
+                                                TemplateConfig {
+                                                    father: SyntaxKind::COMPARE,
+                                                    ignore: SyntaxKind::EQUAL,
+                                                },
+                                            )],
                                         )],
                                     ),
                                 ],

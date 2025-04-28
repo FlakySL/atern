@@ -26,7 +26,7 @@ pub fn process_combo(
         return Err(AstError::ExpectedBodyFor(father));
     }
 
-    if !good { 
+    if !good {
         parser.next();
     }
 

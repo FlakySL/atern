@@ -18,7 +18,8 @@ fn print(indent: usize, element: SyntaxElement) {
 }
 
 fn main() -> Result<(), AstError> {
-    let ast = SqlBuilder::from("SELECT * FROM TABLE_A WHERE age = 18".to_string()).build()?;
+    let ast =
+        SqlBuilder::from("SELECT * FROM TABLE_A, TABLE_B WHERE age = 18".to_string()).build()?;
     print(0, ast.into());
 
     Ok(())

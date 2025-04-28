@@ -14,7 +14,7 @@ pub fn process_list(
         if token == COMMA {
             parser.next();
 
-            if t.contains(&parser.peek().unwrap_or(EMPTY)) {
+            if !t.contains(&parser.peek().unwrap_or(EMPTY)) {
                 return Err(AstError::TrailingComma);
             }
 

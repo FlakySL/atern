@@ -68,7 +68,7 @@ impl Token {
             Token::ParenthesesStart => (SyntaxKind::PARENTHESES_START, String::from("(")),
             Token::ParenthesesEnd => (SyntaxKind::PARENTHESES_END, String::from(")")),
             Token::Equal => (SyntaxKind::EQUAL, String::from("=")),
-            Token::Where => (SyntaxKind::WHERE, String::from("WHERE"))
+            Token::Where => (SyntaxKind::WHERE, String::from("WHERE")),
         }
     }
 }
