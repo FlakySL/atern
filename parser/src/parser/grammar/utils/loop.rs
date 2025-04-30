@@ -3,7 +3,7 @@ use crate::parser::grammar::process::process_rule;
 use crate::parser::grammar::Grammar;
 
 pub fn process_loop(
-    child: &Box<Grammar>,
+    child: &Grammar,
     stop: SyntaxKind,
     father: SyntaxKind,
     parser: &mut Parser,

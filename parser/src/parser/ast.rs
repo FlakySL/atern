@@ -12,6 +12,7 @@ use super::grammar::Grammar::*;
 use super::grammar::GrammarType::*;
 use super::grammar::{process_grammar, TemplateConfig};
 use super::lexer::Token;
+use super::sql::select::SELECT_GRAMMAR;
 
 #[derive(Error, Debug)]
 pub enum AstError {
@@ -128,35 +129,7 @@ impl Parser {
                 process_grammar(
                     self,
                     SELECT,
-                    &[
-                        List(&[IDENTIFIER, ALL]),
-                        Loop(
-                            Box::from(Combo(
-                                true,
-                                &[
-                                    Children(Type(FROM), &[List(&[IDENTIFIER])]),
-                                    Combo(
-                                        true,
-                                        &[Children(
-                                            Type(WHERE),
-                                            &[Template(
-                                                &[
-                                                    Multi(&[NUMBER, IDENTIFIER]),
-                                                    Type(EQUAL),
-                                                    Multi(&[NUMBER, IDENTIFIER]),
-                                                ],
-                                                TemplateConfig {
-                                                    father: SyntaxKind::COMPARE,
-                                                    ignore: SyntaxKind::EQUAL,
-                                                },
-                                            )],
-                                        )],
-                                    ),
-                                ],
-                            )),
-                            SEMICOLON,
-                        ),
-                    ],
+                    SELECT_GRAMMAR    
                 )?;
             },
             CREATE => {

@@ -12,7 +12,7 @@ pub enum Grammar {
     Combo(bool, &'static [Grammar]),
     Expect(SyntaxKind, bool),
     Template(&'static [GrammarType], TemplateConfig),
-    Loop(Box<Grammar>, SyntaxKind),
+    Loop(&'static Grammar, SyntaxKind),
 }
 
 #[derive(Debug, Clone)]
