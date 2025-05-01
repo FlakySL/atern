@@ -33,7 +33,7 @@
     in {
       formatter = pkgs.alejandra;
       devShells.default = craneLib.devShell {
-        packages = with pkgs; [toolchain rustfmt clippy qemu-user];
+        packages = with pkgs; [toolchain  qemu-user];
       };
     });
 }

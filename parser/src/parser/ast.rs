@@ -8,30 +8,35 @@ use logos::Lexer;
 use rowan::{GreenNodeBuilder, NodeOrToken};
 use thiserror::Error;
 
-use super::grammar::Grammar::*;
-use super::grammar::GrammarType::*;
-use super::grammar::{process_grammar, TemplateConfig};
+use super::grammar::process_grammar;
 use super::lexer::Token;
 use super::sql::select::SELECT_GRAMMAR;
 
+/// Possible errors at the time of generating the ast
 #[derive(Error, Debug)]
 pub enum AstError {
+    // TODO: this error should be in LexerError and not in AstError
     #[error("Invalid Token {0}")]
     InvalidToken(String),
 
+    /// This error is triggered when a trailing comma is left at the time of enumeration, e.g. 1, 2,
     #[error("Trailing Comma is not allowed")]
     TrailingComma,
 
+    /// This error is triggered when it expects a specific node and receives a node of another type.
     #[error("Expected {0} found {1}")]
     ExpectedType(SyntaxKind, SyntaxKind),
 
+    /// This error is triggered when the node does not match with the expected by the context
     #[error("Unexpected Node {0}")]
     UnexpectedNode(SyntaxKind),
 
+    /// This error is triggered when the definition of the context is incomplete e.g.: SELECT; (without passing any body)
     #[error("Expected Body for {0}")]
     ExpectedBodyFor(SyntaxKind),
 }
 
+/// Nodes that the ast can have.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[allow(non_camel_case_types)]
 #[repr(u16)]
@@ -103,6 +108,7 @@ pub type SyntaxNode = rowan::SyntaxNode<Lang>;
 pub type SyntaxToken = rowan::SyntaxToken<Lang>;
 pub type SyntaxElement = NodeOrToken<SyntaxNode, SyntaxToken>;
 
+/// This struct symbolizes the parser, receives a Peekable that is used to iterate over the nodes and has a GreenNodeBuilder that symbolizes the ast
 pub struct Parser {
     pub builder: GreenNodeBuilder<'static>,
     iter: Peekable<std::vec::IntoIter<(SyntaxKind, String)>>,
@@ -140,6 +146,7 @@ impl Parser {
 
         Ok(())
     }
+    /// Parses the entire contents of the iter and returns an ast
     pub fn parse(mut self) -> Result<SyntaxNode, AstError> {
         self.builder.start_node(ROOT.into());
 
@@ -151,6 +158,7 @@ impl Parser {
 
         Ok(SyntaxNode::new_root(self.builder.finish()))
     }
+    /// Receives a lexer and iterates its tokens (making sure they are not an Err) and returns a Parser.
     pub fn from_tokens(lex: &mut Lexer<'_, Token>) -> Result<Parser, AstError> {
         let mut nodes = Vec::new();
 

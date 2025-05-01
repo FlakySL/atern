@@ -2,6 +2,7 @@ use logos::Logos;
 
 use super::ast::SyntaxKind;
 
+/// Possible tokens when parsing the Sql code
 #[derive(Logos, Debug)]
 #[logos(skip r"[ \t\n\f]+")]
 pub enum Token {
@@ -52,6 +53,7 @@ pub enum Token {
 }
 
 impl Token {
+    /// Function used to take a token and its content (if any) and convert it into a SyntaxKind (enum used by the Parser).
     #[inline]
     pub(crate) fn to_syntax(&self) -> (SyntaxKind, String) {
         match &self {
