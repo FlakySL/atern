@@ -1,5 +1,5 @@
 use crate::parser::ast::SyntaxKind::{self, *};
-use crate::parser::ast::{AstError, Parser};
+use crate::parser::ast::{ParserError, Parser};
 use crate::parser::grammar::process::process_rule;
 use crate::parser::grammar::{Grammar, GrammarType};
 
@@ -8,9 +8,9 @@ pub fn process_children(
     body: &[Grammar],
     father: SyntaxKind,
     parser: &mut Parser,
-) -> Result<(), AstError> {
+) -> Result<(), ParserError> {
     if start != &parser.peek().unwrap_or(EMPTY) {
-        return Err(AstError::UnexpectedNode(parser.peek().unwrap_or(EMPTY)));
+        return Err(ParserError::UnexpectedNode(parser.peek().unwrap_or(EMPTY)));
     }
 
     let s = parser.peek().unwrap();

@@ -1,4 +1,4 @@
-use crate::parser::ast::{AstError, Parser, SyntaxKind};
+use crate::parser::ast::{ParserError, Parser, SyntaxKind};
 use crate::parser::grammar::process::process_rule;
 use crate::parser::grammar::Grammar;
 
@@ -7,7 +7,7 @@ pub fn process_combo(
     children: &[Grammar],
     father: SyntaxKind,
     parser: &mut Parser,
-) -> Result<(), AstError> {
+) -> Result<(), ParserError> {
     let mut good = true;
 
     for child in children {
@@ -23,7 +23,7 @@ pub fn process_combo(
     }
 
     if !good && !optional {
-        return Err(AstError::ExpectedBodyFor(father));
+        return Err(ParserError::ExpectedBodyFor(father));
     }
 
     if !good {

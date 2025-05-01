@@ -1,4 +1,4 @@
-use crate::parser::ast::{AstError, Parser, SyntaxKind};
+use crate::parser::ast::{ParserError, Parser, SyntaxKind};
 use crate::parser::grammar::process::process_rule;
 use crate::parser::grammar::Grammar;
 
@@ -7,7 +7,7 @@ pub fn process_loop(
     stop: SyntaxKind,
     father: SyntaxKind,
     parser: &mut Parser,
-) -> Result<(), AstError> {
+) -> Result<(), ParserError> {
     while parser.peek() != Some(stop) && parser.peek() != None {
         process_rule(&child, father, parser)?;
     }

@@ -5,14 +5,14 @@ use super::utils::list::process_list;
 use super::utils::r#loop::process_loop;
 use super::utils::template::process_template;
 use super::Grammar;
-use crate::parser::ast::{AstError, Parser, SyntaxKind};
+use crate::parser::ast::{ParserError, Parser, SyntaxKind};
 
 /// Takes an instance of the Parser, a parent node, and a list with definitions of the grammar to parse, returns nothing but modifies the parser.
 pub fn process_grammar(
     parser: &mut Parser,
     father: SyntaxKind,
     grammar: &[Grammar],
-) -> Result<(), AstError> {
+) -> Result<(), ParserError> {
     parser.builder.start_node_at(parser.builder.checkpoint(), father.into());
     parser.next();
 
@@ -30,7 +30,7 @@ pub fn process_rule(
     rule: &Grammar,
     father: SyntaxKind,
     parser: &mut Parser,
-) -> Result<(), AstError> {
+) -> Result<(), ParserError> {
     match rule {
         Grammar::List(t) => {
             process_list(t, father, parser)?;

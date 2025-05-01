@@ -1,13 +1,13 @@
 use crate::parser::ast::SyntaxKind::{self, *};
-use crate::parser::ast::{AstError, Parser};
+use crate::parser::ast::{ParserError, Parser};
 
 pub fn process_expect(
     token: SyntaxKind,
     consume: bool,
     parser: &mut Parser,
-) -> Result<(), AstError> {
+) -> Result<(), ParserError> {
     if parser.peek() != Some(token) {
-        return Err(AstError::ExpectedType(token, parser.peek().unwrap_or(EMPTY)));
+        return Err(ParserError::ExpectedType(token, parser.peek().unwrap_or(EMPTY)));
     }
 
     if consume {

@@ -1,7 +1,7 @@
 ///! Shortcut to parse sql code
 use logos::Logos;
 
-use super::parser::ast::{AstError, Parser, SyntaxNode};
+use super::parser::ast::{ParserError, Parser, SyntaxNode};
 use super::parser::lexer::Token;
 
 /// This structure is an abstraction of using the lexer and passing that value
@@ -11,7 +11,7 @@ pub struct SqlBuilder {
 }
 
 impl SqlBuilder {
-    pub fn build(self) -> Result<SyntaxNode, AstError> {
+    pub fn build(self) -> Result<SyntaxNode, ParserError> {
         Ok(Parser::from_tokens(&mut Token::lexer(&self.code))?.parse()?)
     }
 }

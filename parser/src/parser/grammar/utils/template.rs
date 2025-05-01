@@ -1,5 +1,5 @@
 use crate::parser::ast::SyntaxKind::{self, *};
-use crate::parser::ast::{AstError, Parser};
+use crate::parser::ast::{ParserError, Parser};
 use crate::parser::grammar::GrammarType;
 
 #[derive(Debug)]
@@ -15,7 +15,7 @@ pub fn process_template(
     template: &[GrammarType],
     config: &TemplateConfig,
     parser: &mut Parser,
-) -> Result<(), AstError> {
+) -> Result<(), ParserError> {
     parser.builder.start_node_at(parser.builder.checkpoint(), config.father.into());
 
     for rule in template {
@@ -29,7 +29,7 @@ pub fn process_template(
             continue;
         }
 
-        return Err(AstError::UnexpectedNode(parser.peek().unwrap_or(EMPTY)));
+        return Err(ParserError::UnexpectedNode(parser.peek().unwrap_or(EMPTY)));
     }
 
     parser.builder.finish_node();

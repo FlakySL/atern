@@ -1,5 +1,5 @@
 use rowan::NodeOrToken;
-use sql_parser::parser::ast::{AstError, SyntaxElement, SyntaxKind};
+use sql_parser::parser::ast::{ParserError, SyntaxElement, SyntaxKind};
 use sql_parser::SqlBuilder;
 
 fn print(indent: usize, element: SyntaxElement) {
@@ -17,7 +17,7 @@ fn print(indent: usize, element: SyntaxElement) {
     }
 }
 
-fn main() -> Result<(), AstError> {
+fn main() -> Result<(), ParserError> {
     let ast =
         SqlBuilder::from("SELECT * FROM TABLE_A, TABLE_B WHERE age = 18".to_string()).build()?;
     print(0, ast.into());

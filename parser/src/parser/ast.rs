@@ -14,8 +14,8 @@ use super::sql::select::SELECT_GRAMMAR;
 
 /// Possible errors at the time of generating the ast
 #[derive(Error, Debug)]
-pub enum AstError {
-    // TODO: this error should be in LexerError and not in AstError
+pub enum ParserError {
+    // TODO: this error should be in LexerError and not in ParserError
     #[error("Invalid Token {0}")]
     InvalidToken(String),
 
@@ -129,7 +129,7 @@ impl Parser {
             self.builder.token(token.into(), string.as_str());
         }
     }
-    fn handle_val(&mut self) -> Result<(), AstError> {
+    fn handle_val(&mut self) -> Result<(), ParserError> {
         match self.peek().unwrap() {
             SELECT => {
                 process_grammar(
@@ -141,13 +141,13 @@ impl Parser {
             CREATE => {
                 process_grammar(self, CREATE, &[])?;
             },
-            n => return Err(AstError::UnexpectedNode(n)),
+            n => return Err(ParserError::UnexpectedNode(n)),
         }
 
         Ok(())
     }
     /// Parses the entire contents of the iter and returns an ast
-    pub fn parse(mut self) -> Result<SyntaxNode, AstError> {
+    pub fn parse(mut self) -> Result<SyntaxNode, ParserError> {
         self.builder.start_node(ROOT.into());
 
         while let Some(_) = self.peek() {
@@ -159,7 +159,7 @@ impl Parser {
         Ok(SyntaxNode::new_root(self.builder.finish()))
     }
     /// Receives a lexer and iterates its tokens (making sure they are not an Err) and returns a Parser.
-    pub fn from_tokens(lex: &mut Lexer<'_, Token>) -> Result<Parser, AstError> {
+    pub fn from_tokens(lex: &mut Lexer<'_, Token>) -> Result<Parser, ParserError> {
         let mut nodes = Vec::new();
 
         while let Some(token) = lex.next() {
@@ -167,7 +167,7 @@ impl Parser {
                 Ok(t) => {
                     nodes.push(t.to_syntax());
                 },
-                Err(_) => return Err(AstError::InvalidToken(lex.slice().to_string())),
+                Err(_) => return Err(ParserError::InvalidToken(lex.slice().to_string())),
             }
         }
 
