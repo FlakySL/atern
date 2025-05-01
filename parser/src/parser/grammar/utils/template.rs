@@ -3,8 +3,11 @@ use crate::parser::ast::{AstError, Parser};
 use crate::parser::grammar::GrammarType;
 
 #[derive(Debug)]
+/// Configuration for the Template grammar rule
 pub struct TemplateConfig {
+    /// It is the data type that will wrap everything in the template.
     pub father: SyntaxKind,
+    /// Indicates a node to be ignored (almost always a derivative of the parent node).
     pub ignore: SyntaxKind,
 }
 

@@ -53,8 +53,8 @@ pub enum Token {
 }
 
 impl Token {
-    /// Function used to take a token and its content (if any) and convert it into a SyntaxKind (enum used by the Parser).
     #[inline]
+    /// Function used to take a token and its content (if any) and convert it into a SyntaxKind (enum used by the Parser).
     pub(crate) fn to_syntax(&self) -> (SyntaxKind, String) {
         match &self {
             Token::All => (SyntaxKind::ALL, String::from("*")),
