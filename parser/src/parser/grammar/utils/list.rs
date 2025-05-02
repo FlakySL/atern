@@ -1,5 +1,5 @@
 use crate::parser::ast::SyntaxKind::{self, *};
-use crate::parser::ast::{ParserError, Parser};
+use crate::parser::ast::{Parser, ParserError};
 
 pub fn process_list(
     t: &[SyntaxKind],

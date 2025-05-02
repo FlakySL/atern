@@ -1,5 +1,5 @@
 use crate::parser::ast::SyntaxKind::{self, *};
-use crate::parser::ast::{ParserError, Parser};
+use crate::parser::ast::{Parser, ParserError};
 use crate::parser::grammar::GrammarType;
 
 #[derive(Debug)]
@@ -7,7 +7,8 @@ use crate::parser::grammar::GrammarType;
 pub struct TemplateConfig {
     /// It is the data type that will wrap everything in the template.
     pub father: SyntaxKind,
-    /// Indicates a node to be ignored (almost always a derivative of the parent node).
+    /// Indicates a node to be ignored (almost always a derivative of the parent
+    /// node).
     pub ignore: SyntaxKind,
 }
 

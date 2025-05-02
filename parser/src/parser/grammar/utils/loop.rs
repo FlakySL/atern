@@ -1,4 +1,4 @@
-use crate::parser::ast::{ParserError, Parser, SyntaxKind};
+use crate::parser::ast::{Parser, ParserError, SyntaxKind};
 use crate::parser::grammar::process::process_rule;
 use crate::parser::grammar::Grammar;
 

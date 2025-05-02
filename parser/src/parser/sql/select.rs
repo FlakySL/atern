@@ -1,7 +1,7 @@
 use crate::parser::ast::SyntaxKind::*;
 use crate::parser::grammar::Grammar::{self, *};
 use crate::parser::grammar::GrammarType::*;
-use crate::parser::grammar::TemplateConfig;
+use super::boolean::CMP_GRAMMAR;
 
 pub const SELECT_GRAMMAR: &[Grammar] = &[
     List(&[IDENTIFIER, ALL]),
@@ -14,14 +14,7 @@ pub const SELECT_GRAMMAR: &[Grammar] = &[
                     true,
                     &[Children(
                         Type(WHERE),
-                        &[Template(
-                            &[
-                                Multi(&[NUMBER, IDENTIFIER]),
-                                Type(EQUAL),
-                                Multi(&[NUMBER, IDENTIFIER]),
-                            ],
-                            TemplateConfig { father: COMPARE, ignore: EQUAL },
-                        )],
+                        &[CMP_GRAMMAR],
                     )],
                 ),
             ],

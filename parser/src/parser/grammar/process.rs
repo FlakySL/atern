@@ -5,9 +5,10 @@ use super::utils::list::process_list;
 use super::utils::r#loop::process_loop;
 use super::utils::template::process_template;
 use super::Grammar;
-use crate::parser::ast::{ParserError, Parser, SyntaxKind};
+use crate::parser::ast::{Parser, ParserError, SyntaxKind};
 
-/// Takes an instance of the Parser, a parent node, and a list with definitions of the grammar to parse, returns nothing but modifies the parser.
+/// Takes an instance of the Parser, a parent node, and a list with definitions
+/// of the grammar to parse, returns nothing but modifies the parser.
 pub fn process_grammar(
     parser: &mut Parser,
     father: SyntaxKind,
@@ -25,7 +26,8 @@ pub fn process_grammar(
     Ok(())
 }
 
-/// Takes a rule to be processed and executes the function that does the corresponding function depending on the definition of that rule.
+/// Takes a rule to be processed and executes the function that does the
+/// corresponding function depending on the definition of that rule.
 pub fn process_rule(
     rule: &Grammar,
     father: SyntaxKind,

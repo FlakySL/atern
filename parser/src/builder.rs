@@ -1,7 +1,7 @@
-///! Shortcut to parse sql code
+/// ! Shortcut to parse sql code
 use logos::Logos;
 
-use super::parser::ast::{ParserError, Parser, SyntaxNode};
+use super::parser::ast::{Parser, ParserError, SyntaxNode};
 use super::parser::lexer::Token;
 
 /// This structure is an abstraction of using the lexer and passing that value

@@ -42,6 +42,12 @@ pub enum Token {
     #[token("=")]
     Equal,
 
+    #[token(">")]
+    GT,
+
+    #[token("<")]
+    LT,
+
     #[token(";")]
     Semicolon,
 
@@ -54,7 +60,8 @@ pub enum Token {
 
 impl Token {
     #[inline]
-    /// Function used to take a token and its content (if any) and convert it into a SyntaxKind (enum used by the Parser).
+    /// Function used to take a token and its content (if any) and convert it
+    /// into a SyntaxKind (enum used by the Parser).
     pub(crate) fn to_syntax(&self) -> (SyntaxKind, String) {
         match &self {
             Token::All => (SyntaxKind::ALL, String::from("*")),
@@ -71,6 +78,8 @@ impl Token {
             Token::ParenthesesEnd => (SyntaxKind::PARENTHESES_END, String::from(")")),
             Token::Equal => (SyntaxKind::EQUAL, String::from("=")),
             Token::Where => (SyntaxKind::WHERE, String::from("WHERE")),
+            Token::LT => (SyntaxKind::LT, String::from("<")),
+            Token::GT => (SyntaxKind::GT, String::from(">")),
         }
     }
 }

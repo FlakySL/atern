@@ -19,19 +19,23 @@ pub enum ParserError {
     #[error("Invalid Token {0}")]
     InvalidToken(String),
 
-    /// This error is triggered when a trailing comma is left at the time of enumeration, e.g. 1, 2,
+    /// This error is triggered when a trailing comma is left at the time of
+    /// enumeration, e.g. 1, 2,
     #[error("Trailing Comma is not allowed")]
     TrailingComma,
 
-    /// This error is triggered when it expects a specific node and receives a node of another type.
+    /// This error is triggered when it expects a specific node and receives a
+    /// node of another type.
     #[error("Expected {0} found {1}")]
     ExpectedType(SyntaxKind, SyntaxKind),
 
-    /// This error is triggered when the node does not match with the expected by the context
+    /// This error is triggered when the node does not match with the expected
+    /// by the context
     #[error("Unexpected Node {0}")]
     UnexpectedNode(SyntaxKind),
 
-    /// This error is triggered when the definition of the context is incomplete e.g.: SELECT; (without passing any body)
+    /// This error is triggered when the definition of the context is incomplete
+    /// e.g.: SELECT; (without passing any body)
     #[error("Expected Body for {0}")]
     ExpectedBodyFor(SyntaxKind),
 }
@@ -62,8 +66,12 @@ pub enum SyntaxKind {
     VALUES,
     DEFINITION,
     EQUAL,
-    COMPARE,
+    GT,
+    LT,
 
+    COMPARE,
+    GREATER,
+    LESS,
     EMPTY,
     ROOT,
 }
@@ -108,7 +116,8 @@ pub type SyntaxNode = rowan::SyntaxNode<Lang>;
 pub type SyntaxToken = rowan::SyntaxToken<Lang>;
 pub type SyntaxElement = NodeOrToken<SyntaxNode, SyntaxToken>;
 
-/// This struct symbolizes the parser, receives a Peekable that is used to iterate over the nodes and has a GreenNodeBuilder that symbolizes the ast
+/// This struct symbolizes the parser, receives a Peekable that is used to
+/// iterate over the nodes and has a GreenNodeBuilder that symbolizes the ast
 pub struct Parser {
     pub builder: GreenNodeBuilder<'static>,
     iter: Peekable<std::vec::IntoIter<(SyntaxKind, String)>>,
@@ -132,11 +141,7 @@ impl Parser {
     fn handle_val(&mut self) -> Result<(), ParserError> {
         match self.peek().unwrap() {
             SELECT => {
-                process_grammar(
-                    self,
-                    SELECT,
-                    SELECT_GRAMMAR    
-                )?;
+                process_grammar(self, SELECT, SELECT_GRAMMAR)?;
             },
             CREATE => {
                 process_grammar(self, CREATE, &[])?;
@@ -158,7 +163,8 @@ impl Parser {
 
         Ok(SyntaxNode::new_root(self.builder.finish()))
     }
-    /// Receives a lexer and iterates its tokens (making sure they are not an Err) and returns a Parser.
+    /// Receives a lexer and iterates its tokens (making sure they are not an
+    /// Err) and returns a Parser.
     pub fn from_tokens(lex: &mut Lexer<'_, Token>) -> Result<Parser, ParserError> {
         let mut nodes = Vec::new();
 
