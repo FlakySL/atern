@@ -120,7 +120,7 @@ pub type SyntaxElement = NodeOrToken<SyntaxNode, SyntaxToken>;
 /// iterate over the nodes and has a GreenNodeBuilder that symbolizes the ast
 pub struct Parser {
     pub builder: GreenNodeBuilder<'static>,
-    iter: Peekable<std::vec::IntoIter<(SyntaxKind, String)>>,
+    pub iter: Peekable<std::vec::IntoIter<(SyntaxKind, String)>>,
 }
 
 impl Parser {
