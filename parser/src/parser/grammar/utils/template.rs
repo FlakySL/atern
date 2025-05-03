@@ -17,22 +17,38 @@ pub fn process_template(
     config: &TemplateConfig,
     parser: &mut Parser,
 ) -> Result<(), ParserError> {
-    parser.builder.start_node_at(parser.builder.checkpoint(), config.father.into());
+    let tokens = {
+        let mut tokens = Vec::new();
+        for rule in template {
+            if parser.peek() == Some(config.ignore) {
+                parser.next();
+                continue;
+            }
 
-    for rule in template {
-        if parser.peek() == Some(config.ignore) {
-            parser.next();
-            continue;
+            if *rule == parser.peek().unwrap_or(EMPTY) {
+                let peek = parser.peek_with_content().unwrap();
+                tokens.push((peek.0, peek.1.clone())); 
+                parser.next();
+                continue;
+            }
+
+            return Err(ParserError::UnexpectedNode(parser.peek().unwrap_or(EMPTY)));
+        }
+        tokens
+    };
+
+    {
+        parser
+            .builder
+            .start_node_at(parser.builder.checkpoint(), config.father.into());
+
+        for t in tokens.iter() {
+            parser.builder.token(t.0.into(), &t.1);
         }
 
-        if *rule == parser.peek().unwrap_or(EMPTY) {
-            parser.bump();
-            continue;
-        }
-
-        return Err(ParserError::UnexpectedNode(parser.peek().unwrap_or(EMPTY)));
+        parser.builder.finish_node();
     }
 
-    parser.builder.finish_node();
     Ok(())
 }
+

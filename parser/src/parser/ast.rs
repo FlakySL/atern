@@ -130,6 +130,12 @@ impl Parser {
         }
         self.iter.peek().map(|&(t, _)| t)
     }
+    pub fn peek_with_content(&mut self) -> Option<(SyntaxKind, &String)> {
+        while self.iter.peek().map(|&(t, _)| t == WHITESPACE).unwrap_or(false) {
+            self.bump();
+        }
+        self.iter.peek().map(|&(t, ref c)| (t, c))
+    }
     pub fn next(&mut self) {
         self.iter.next();
     }
