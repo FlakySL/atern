@@ -21,6 +21,12 @@ pub enum Token {
     #[regex("(?i)WHERE")]
     Where,
 
+    #[regex("(?i)AND")]
+    And,
+
+    #[regex("(?i)OR")]
+    Or,
+
     #[regex(r#"(?:"[^"]*"|'[^']*')"#, |lex| {
         let content = lex.slice();
         content[1..content.len()-1].to_string()
@@ -80,6 +86,8 @@ impl Token {
             Token::Where => (SyntaxKind::WHERE, String::from("WHERE")),
             Token::LT => (SyntaxKind::LT, String::from("<")),
             Token::GT => (SyntaxKind::GT, String::from(">")),
+            Token::And => (SyntaxKind::AND, String::from("AND")),
+            Token::Or => (SyntaxKind::OR, String::from("Or")),
         }
     }
 }

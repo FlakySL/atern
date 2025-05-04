@@ -68,6 +68,8 @@ pub enum SyntaxKind {
     EQUAL,
     GT,
     LT,
+    AND,
+    OR,
 
     COMPARE,
     GREATER,

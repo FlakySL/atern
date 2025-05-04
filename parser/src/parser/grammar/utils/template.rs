@@ -40,8 +40,6 @@ pub fn process_template(
     {
         parser.builder.start_node_at(parser.builder.checkpoint(), config.father.into());
 
-        println!("{:?}", tokens);
-
         for t in tokens.iter() {
             parser.builder.token(t.0.into(), &t.1);
         }
