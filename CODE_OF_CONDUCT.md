@@ -1,4 +1,4 @@
-# Translatable Code of Conduct
+# Atern Code of Conduct
 
 ## Our Pledge
 
