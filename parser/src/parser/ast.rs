@@ -154,6 +154,9 @@ impl Parser {
             CREATE => {
                 process_grammar(self, CREATE, &[])?;
             },
+            SEMICOLON => {
+                self.next();
+            },
             n => return Err(ParserError::UnexpectedNode(n)),
         }
 
