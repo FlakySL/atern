@@ -35,7 +35,7 @@ pub fn process_rule(
 ) -> Result<(), ParserError> {
     match rule {
         Grammar::List(t) => {
-            process_list(t, father, parser)?;
+            process_list(t, parser)?;
         },
         Grammar::Loop(child, stop) => {
             process_loop(child, *stop, father, parser)?;

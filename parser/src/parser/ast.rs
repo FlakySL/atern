@@ -38,6 +38,10 @@ pub enum ParserError {
     /// e.g.: SELECT; (without passing any body)
     #[error("Expected Body for {0}")]
     ExpectedBodyFor(SyntaxKind),
+
+    /// this error appears when the content is finished but the current grammar rule needs more content to complete.
+    #[error("Unexpected EOF")]
+    UnexpectedEof,
 }
 
 /// Nodes that the ast can have.

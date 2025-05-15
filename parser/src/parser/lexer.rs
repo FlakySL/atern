@@ -25,7 +25,7 @@ pub enum Token {
     And,
 
     #[regex("(?i)OR")]
-    Or,
+    Or, 
 
     #[regex(r#"(?:"[^"]*"|'[^']*')"#, |lex| {
         let content = lex.slice();

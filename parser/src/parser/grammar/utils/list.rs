@@ -3,11 +3,10 @@ use crate::parser::ast::{Parser, ParserError};
 
 pub fn process_list(
     t: &[SyntaxKind],
-    father: SyntaxKind,
     parser: &mut Parser,
 ) -> Result<(), ParserError> {
-    if parser.peek() == None || parser.peek() == Some(SEMICOLON) {
-        return Err(ParserError::ExpectedBodyFor(father));
+    if parser.peek() == None {
+        return Err(ParserError::UnexpectedEof);
     }
 
     while let Some(token) = parser.peek() {
