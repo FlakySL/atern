@@ -30,6 +30,12 @@ pub enum Token {
     #[regex("(?i)GROUP")]
     Group,
 
+    #[regex("(?i)ASC")]
+    ASC,
+    
+    #[regex("(?i)DESC")]
+    Desc,
+
     #[regex("(?i)BY")]
     By,
 
@@ -96,6 +102,8 @@ impl Token {
             Token::Or => (SyntaxKind::OR, String::from("OR")),
             Token::Group => (SyntaxKind::GROUP, String::from("GROUP")),
             Token::By => (SyntaxKind::BY, String::from("BY")),
+            Token::Desc => (SyntaxKind::DESC, String::from("DESC")),
+            Token::ASC => (SyntaxKind::ASC, String::from("ASC"))
         }
     }
 }

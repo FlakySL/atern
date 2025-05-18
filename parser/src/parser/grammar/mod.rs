@@ -42,7 +42,7 @@ pub enum GrammarType {
     Type(SyntaxKind),
     /// Checks if the node is in the defined node list.
     Multi(&'static [SyntaxKind]),
-
+    /// Run a process_list underneath to get the functionality of a list in a GrammarRule
     List(SyntaxKind),
 }
 

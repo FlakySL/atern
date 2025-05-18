@@ -78,6 +78,8 @@ pub enum SyntaxKind {
     OR,
     GROUP,
     BY,
+    DESC,
+    ASC,
 
     COMPARE,
     GREATER,
