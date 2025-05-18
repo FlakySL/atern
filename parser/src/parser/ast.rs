@@ -39,7 +39,8 @@ pub enum ParserError {
     #[error("Expected Body for {0}")]
     ExpectedBodyFor(SyntaxKind),
 
-    /// this error appears when the content is finished but the current grammar rule needs more content to complete.
+    /// this error appears when the content is finished but the current grammar
+    /// rule needs more content to complete.
     #[error("Unexpected EOF")]
     UnexpectedEof,
 }
@@ -54,6 +55,7 @@ pub enum SyntaxKind {
     SELECT,
     FROM,
     WHERE,
+    GROUP_BY,
 
     CREATE,
 
@@ -74,6 +76,8 @@ pub enum SyntaxKind {
     LT,
     AND,
     OR,
+    GROUP,
+    BY,
 
     COMPARE,
     GREATER,

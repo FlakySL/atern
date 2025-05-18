@@ -9,7 +9,7 @@ pub fn process_combo(
     parser: &mut Parser,
 ) -> Result<(), ParserError> {
     let mut good = true;
-    let iter = parser.iter.clone(); 
+    let iter = parser.iter.clone();
 
     for child in children {
         match process_rule(&child, father, parser) {

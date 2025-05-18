@@ -25,7 +25,13 @@ pub enum Token {
     And,
 
     #[regex("(?i)OR")]
-    Or, 
+    Or,
+
+    #[regex("(?i)GROUP")]
+    Group,
+
+    #[regex("(?i)BY")]
+    By,
 
     #[regex(r#"(?:"[^"]*"|'[^']*')"#, |lex| {
         let content = lex.slice();
@@ -87,7 +93,9 @@ impl Token {
             Token::LT => (SyntaxKind::LT, String::from("<")),
             Token::GT => (SyntaxKind::GT, String::from(">")),
             Token::And => (SyntaxKind::AND, String::from("AND")),
-            Token::Or => (SyntaxKind::OR, String::from("Or")),
+            Token::Or => (SyntaxKind::OR, String::from("OR")),
+            Token::Group => (SyntaxKind::GROUP, String::from("GROUP")),
+            Token::By => (SyntaxKind::BY, String::from("BY")),
         }
     }
 }

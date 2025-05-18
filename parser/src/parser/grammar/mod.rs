@@ -42,6 +42,8 @@ pub enum GrammarType {
     Type(SyntaxKind),
     /// Checks if the node is in the defined node list.
     Multi(&'static [SyntaxKind]),
+
+    List(SyntaxKind),
 }
 
 impl PartialEq<SyntaxKind> for GrammarType {
@@ -50,6 +52,7 @@ impl PartialEq<SyntaxKind> for GrammarType {
             Self::Dql => other.is_ddl(),
             Self::Type(t) => t == other,
             Self::Multi(l) => l.contains(other),
+            Self::List(_) => panic!("Cannot use list to compare"),
         }
     }
 }

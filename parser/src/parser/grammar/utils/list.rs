@@ -1,10 +1,7 @@
 use crate::parser::ast::SyntaxKind::{self, *};
 use crate::parser::ast::{Parser, ParserError};
 
-pub fn process_list(
-    t: &[SyntaxKind],
-    parser: &mut Parser,
-) -> Result<(), ParserError> {
+pub fn process_list(t: &[SyntaxKind], parser: &mut Parser) -> Result<(), ParserError> {
     if parser.peek() == None {
         return Err(ParserError::UnexpectedEof);
     }
