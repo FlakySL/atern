@@ -1,21 +1,24 @@
 use crate::parser::ast::SyntaxKind::{self, *};
 use crate::parser::ast::{Parser, ParserError};
 use crate::parser::grammar::process::process_rule;
-use crate::parser::grammar::{Grammar, GrammarType};
+use crate::parser::grammar::Grammar;
 
 pub fn process_children(
-    start: &GrammarType,
+    start: &[SyntaxKind],
+    node_father: SyntaxKind,
     body: &[Grammar],
     father: SyntaxKind,
     parser: &mut Parser,
-) -> Result<(), ParserError> {
-    if start != &parser.peek().unwrap_or(EMPTY) {
-        return Err(ParserError::UnexpectedNode(parser.peek().unwrap_or(EMPTY)));
+) -> Result<(), ParserError> { 
+    for rule in start {
+        if parser.peek() != Some(*rule) {
+             return Err(ParserError::UnexpectedNode(parser.peek().unwrap_or(EMPTY)));
+        }
+
+        parser.next();
     }
 
-    let s = parser.peek().unwrap();
-    parser.builder.start_node_at(parser.builder.checkpoint(), s.into());
-    parser.next();
+    parser.builder.start_node_at(parser.builder.checkpoint(), node_father.into());
 
     for rule in body {
         process_rule(&rule, father, parser)?;

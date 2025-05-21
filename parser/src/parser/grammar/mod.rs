@@ -14,7 +14,7 @@ pub enum Grammar {
     List(&'static [SyntaxKind]), // separated by comma
     /// It expects a GrammarType and if it is satisfied it wraps everything in
     /// that type, besides executing more grammar rules.
-    Children(GrammarType, &'static [Grammar]),
+    Children(&'static [SyntaxKind], SyntaxKind, &'static [Grammar]),
     /// It takes several rules, if a rule gives error it passes with the next
     /// one, if it does not give error it applies it and finishes its execution
     /// if the first parameter is true at least one rule has to be fulfilled, if

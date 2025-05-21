@@ -43,8 +43,8 @@ pub fn process_rule(
         Grammar::Combo(optional, children) => {
             process_combo(*optional, children, father, parser)?;
         },
-        Grammar::Children(start, body) => {
-            process_children(start, body, father, parser)?;
+        Grammar::Children(start, node_father, body) => {
+            process_children(start, *node_father, body, father, parser)?;
         },
         Grammar::Expect(token, consume) => {
             process_expect(*token, *consume, parser)?;
