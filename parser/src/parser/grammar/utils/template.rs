@@ -54,4 +54,3 @@ pub fn process_template(
 
     Ok(())
 }
-

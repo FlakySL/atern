@@ -9,10 +9,10 @@ pub fn process_children(
     body: &[Grammar],
     father: SyntaxKind,
     parser: &mut Parser,
-) -> Result<(), ParserError> { 
+) -> Result<(), ParserError> {
     for rule in start {
         if parser.peek() != Some(*rule) {
-             return Err(ParserError::UnexpectedNode(parser.peek().unwrap_or(EMPTY)));
+            return Err(ParserError::UnexpectedNode(parser.peek().unwrap_or(EMPTY)));
         }
 
         parser.next();

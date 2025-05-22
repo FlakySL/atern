@@ -32,7 +32,7 @@ pub enum Token {
 
     #[regex("(?i)ASC")]
     ASC,
-    
+
     #[regex("(?i)DESC")]
     Desc,
 
@@ -103,7 +103,7 @@ impl Token {
             Token::Group => (SyntaxKind::GROUP, String::from("GROUP")),
             Token::By => (SyntaxKind::BY, String::from("BY")),
             Token::Desc => (SyntaxKind::DESC, String::from("DESC")),
-            Token::ASC => (SyntaxKind::ASC, String::from("ASC"))
+            Token::ASC => (SyntaxKind::ASC, String::from("ASC")),
         }
     }
 }
