@@ -1,3 +1,4 @@
+pub mod optional;
 pub mod children;
 pub mod combo;
 pub mod expect;

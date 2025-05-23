@@ -1,4 +1,4 @@
-use super::utils::children::process_children;
+use super::utils::{children::process_children, optional::process_optional};
 use super::utils::combo::process_combo;
 use super::utils::expect::process_expect;
 use super::utils::list::process_list;
@@ -51,6 +51,9 @@ pub fn process_rule(
         },
         Grammar::Template(template, config) => {
             process_template(template, config, parser)?;
+        },
+        Grammar::Optional(rule) => {
+            process_optional(rule, father, parser);
         },
     }
 

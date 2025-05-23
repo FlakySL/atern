@@ -31,6 +31,8 @@ pub enum Grammar {
     /// Execute a rule several times until a specific node at which it will stop
     /// executing that rule (e.g. a semicolon).
     Loop(&'static Grammar, SyntaxKind),
+
+    Optional(&'static Grammar),
 }
 
 #[derive(Debug, Clone)]
