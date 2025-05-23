@@ -33,6 +33,8 @@ pub enum Grammar {
     Loop(&'static Grammar, SyntaxKind),
 
     Optional(&'static Grammar),
+
+    Type(GrammarType),
 }
 
 #[derive(Debug, Clone)]
@@ -44,9 +46,6 @@ pub enum GrammarType {
     Type(SyntaxKind),
     /// Checks if the node is in the defined node list.
     Multi(&'static [SyntaxKind]),
-    /// Run a process_list underneath to get the functionality of a list in a
-    /// GrammarRule
-    List(SyntaxKind),
 }
 
 impl PartialEq<SyntaxKind> for GrammarType {
@@ -55,7 +54,6 @@ impl PartialEq<SyntaxKind> for GrammarType {
             Self::Dql => other.is_ddl(),
             Self::Type(t) => t == other,
             Self::Multi(l) => l.contains(other),
-            Self::List(_) => panic!("Cannot use list to compare"),
         }
     }
 }

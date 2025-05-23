@@ -1,4 +1,5 @@
 pub mod optional;
+pub mod gtype;
 pub mod children;
 pub mod combo;
 pub mod expect;
