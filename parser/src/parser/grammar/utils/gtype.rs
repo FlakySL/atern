@@ -1,6 +1,7 @@
-use crate::parser::{ast::{Parser, ParserError}, grammar::GrammarType};
+use crate::parser::ast::{Parser, ParserError};
+use crate::parser::grammar::GrammarType;
 
-pub fn process_type(gtype: &GrammarType, parser: &mut Parser) -> Result<(), ParserError> {
+pub fn process_gtype(gtype: &GrammarType, parser: &mut Parser) -> Result<(), ParserError> {
     if parser.peek().is_none() {
         return Err(ParserError::UnexpectedEof);
     }
@@ -8,6 +9,8 @@ pub fn process_type(gtype: &GrammarType, parser: &mut Parser) -> Result<(), Pars
     if gtype != &parser.peek().unwrap() {
         return Err(ParserError::UnexpectedNode(parser.peek().unwrap()));
     }
+
+    parser.bump();
 
     Ok(())
 }

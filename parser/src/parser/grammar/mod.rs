@@ -34,7 +34,7 @@ pub enum Grammar {
 
     Optional(&'static Grammar),
 
-    Type(GrammarType),
+    GType(GrammarType),
 }
 
 #[derive(Debug, Clone)]

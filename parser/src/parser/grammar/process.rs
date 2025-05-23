@@ -1,8 +1,9 @@
-use super::utils::gtype::process_type;
-use super::utils::{children::process_children, optional::process_optional};
+use super::utils::children::process_children;
 use super::utils::combo::process_combo;
 use super::utils::expect::process_expect;
+use super::utils::gtype::process_gtype;
 use super::utils::list::process_list;
+use super::utils::optional::process_optional;
 use super::utils::r#loop::process_loop;
 use super::utils::template::process_template;
 use super::Grammar;
@@ -56,8 +57,8 @@ pub fn process_rule(
         Grammar::Optional(rule) => {
             process_optional(rule, father, parser);
         },
-        Grammar::Type(t) => {
-            process_type(&t, parser);
+        Grammar::GType(t) => {
+            process_gtype(&t, parser)?;
         },
     }
 

@@ -1,4 +1,6 @@
-use crate::parser::{ast::{Parser, SyntaxKind}, grammar::{process::process_rule, Grammar}};
+use crate::parser::ast::{Parser, SyntaxKind};
+use crate::parser::grammar::process::process_rule;
+use crate::parser::grammar::Grammar;
 
 pub fn process_optional(rule: &Grammar, father: SyntaxKind, parser: &mut Parser) {
     let iter = parser.iter.clone();

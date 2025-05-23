@@ -23,14 +23,14 @@ pub fn process_template(
             if parser.peek() == Some(config.ignore) {
                 parser.next();
                 continue;
-            } 
+            }
 
             if *rule == parser.peek().unwrap_or(EMPTY) {
                 let peek = parser.peek_with_content().unwrap();
                 tokens.push((peek.0, peek.1.clone()));
                 parser.next();
                 continue;
-            } 
+            }
 
             return Err(ParserError::UnexpectedNode(parser.peek().unwrap_or(EMPTY)));
         }
