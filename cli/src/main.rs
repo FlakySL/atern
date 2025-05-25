@@ -19,7 +19,7 @@ fn print(indent: usize, element: SyntaxElement) {
 
 fn main() -> Result<(), ParserError> {
     let ast =
-        SqlBuilder::from("SELECT Users WHERE Country='USA' GROUP BY Age DESC".to_string()).build()?;
+        SqlBuilder::from("SELECT Users WHERE Country='USA' ORDER BY age DESC".to_string()).build()?;
     print(0, ast.into());
 
     Ok(())

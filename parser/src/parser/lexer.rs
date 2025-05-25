@@ -36,6 +36,9 @@ pub enum Token {
     #[regex("(?i)DESC")]
     Desc,
 
+    #[regex("(?i)ORDER")]
+    Order,
+
     #[regex("(?i)BY")]
     By,
 
@@ -104,6 +107,7 @@ impl Token {
             Token::By => (SyntaxKind::BY, String::from("BY")),
             Token::Desc => (SyntaxKind::DESC, String::from("DESC")),
             Token::ASC => (SyntaxKind::ASC, String::from("ASC")),
+            Token::Order => (SyntaxKind::ORDER, String::from("ORDER")),
         }
     }
 }

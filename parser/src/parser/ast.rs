@@ -55,6 +55,7 @@ pub enum SyntaxKind {
     SELECT,
     FROM,
     WHERE,
+    ORDER_BY,
     GROUP_BY,
 
     CREATE,
@@ -77,6 +78,7 @@ pub enum SyntaxKind {
     AND,
     OR,
     GROUP,
+    ORDER,
     BY,
     DESC,
     ASC,
