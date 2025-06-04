@@ -82,6 +82,7 @@ pub enum SyntaxKind {
     BY,
     DESC,
     ASC,
+    DISTINCT,
 
     COMPARE,
     GREATER,

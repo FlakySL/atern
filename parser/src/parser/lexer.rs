@@ -30,6 +30,9 @@ pub enum Token {
     #[regex("(?i)GROUP")]
     Group,
 
+    #[regex("(?i)DISTINCT")]
+    Distinct,
+
     #[regex("(?i)ASC")]
     ASC,
 
@@ -108,6 +111,7 @@ impl Token {
             Token::Desc => (SyntaxKind::DESC, String::from("DESC")),
             Token::ASC => (SyntaxKind::ASC, String::from("ASC")),
             Token::Order => (SyntaxKind::ORDER, String::from("ORDER")),
+            Token::Distinct => (SyntaxKind::DISTINCT, String::from("DISTINCT")),
         }
     }
 }

@@ -6,6 +6,7 @@ use crate::parser::ast::SyntaxKind::*;
 use crate::parser::grammar::Grammar::{self, *};
 
 pub const SELECT_GRAMMAR: &[Grammar] = &[
+    Optional(&Expect(DISTINCT, true)),
     List(&[IDENTIFIER, ALL]),
     Loop(&Combo(true, &[FROM_GRAMMAR, WHERE_GRAMMAR, GROUP_BY_GRAMMAR, ORDER_BY_GRAMMAR]), SEMICOLON),
 ];
