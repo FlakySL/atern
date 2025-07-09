@@ -27,6 +27,9 @@ pub enum Token {
     #[regex("(?i)OR")]
     Or,
 
+    #[regex("(?i)NOT")]
+    Not,
+
     #[regex("(?i)GROUP")]
     Group,
 
@@ -106,6 +109,7 @@ impl Token {
             Token::GT => (SyntaxKind::GT, String::from(">")),
             Token::And => (SyntaxKind::AND, String::from("AND")),
             Token::Or => (SyntaxKind::OR, String::from("OR")),
+            Token::Not => (SyntaxKind::NOT, String::from("NOT")),
             Token::Group => (SyntaxKind::GROUP, String::from("GROUP")),
             Token::By => (SyntaxKind::BY, String::from("BY")),
             Token::Desc => (SyntaxKind::DESC, String::from("DESC")),

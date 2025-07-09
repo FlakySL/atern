@@ -75,8 +75,11 @@ pub enum SyntaxKind {
     EQUAL,
     GT,
     LT,
+
     AND,
     OR,
+    NOT,
+
     GROUP,
     ORDER,
     BY,
