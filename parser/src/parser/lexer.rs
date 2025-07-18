@@ -69,6 +69,12 @@ pub enum Token {
     #[token("=")]
     Equal,
 
+    #[token(">=")]
+    GEQT,
+
+    #[token("<=")]
+    LEQT,
+
     #[token(">")]
     GT,
 
@@ -107,6 +113,8 @@ impl Token {
             Token::Where => (SyntaxKind::WHERE, String::from("WHERE")),
             Token::LT => (SyntaxKind::LT, String::from("<")),
             Token::GT => (SyntaxKind::GT, String::from(">")),
+            Token::LEQT => (SyntaxKind::LT, String::from("<=")),
+            Token::GEQT => (SyntaxKind::GT, String::from(">=")),
             Token::And => (SyntaxKind::AND, String::from("AND")),
             Token::Or => (SyntaxKind::OR, String::from("OR")),
             Token::Not => (SyntaxKind::NOT, String::from("NOT")),
