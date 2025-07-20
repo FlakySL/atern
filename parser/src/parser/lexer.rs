@@ -45,6 +45,21 @@ pub enum Token {
     #[regex("(?i)BY")]
     By,
 
+    #[regex("(?i)INSERT")]
+    Insert,
+
+    #[regex("(?i)UPDATE")]
+    Update,
+
+    #[regex("(?i)DELETE")]
+    Delete,
+
+    #[regex("(?i)ALTER")]
+    Alter,
+
+    #[regex("(?i)DROP")]
+    Drop,
+
     #[regex(r#"(?:"[^"]*"|'[^']*')"#, |lex| {
         let content = lex.slice();
         content[1..content.len()-1].to_string()
@@ -97,6 +112,11 @@ impl Token {
             Token::Comma => (SyntaxKind::COMMA, String::from(",")),
             Token::Semicolon => (SyntaxKind::SEMICOLON, String::from(";")),
             Token::Create => (SyntaxKind::CREATE, String::from("CREATE")),
+            Token::Insert => (SyntaxKind::INSERT, String::from("INSERT")),
+            Token::Update => (SyntaxKind::UPDATE, String::from("UPDATE")),
+            Token::Delete => (SyntaxKind::DELETE, String::from("DELETE")),
+            Token::Alter => (SyntaxKind::ALTER, String::from("ALTER")),
+            Token::Drop => (SyntaxKind::DROP, String::from("DROP")),
             Token::Table => (SyntaxKind::TABLE, String::from("TABLE")),
             Token::ParenthesesStart => (SyntaxKind::PARENTHESES_START, String::from("(")),
             Token::ParenthesesEnd => (SyntaxKind::PARENTHESES_END, String::from(")")),

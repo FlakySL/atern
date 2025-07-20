@@ -59,6 +59,11 @@ pub enum SyntaxKind {
     GROUP_BY,
 
     CREATE,
+    INSERT,
+    UPDATE,
+    DELETE,
+    ALTER,
+    DROP,
 
     TABLE,
 
@@ -93,10 +98,16 @@ pub enum SyntaxKind {
 
 impl SyntaxKind {
     pub fn is_dql(&self) -> bool {
-        (2..=3).contains(&(*self as u16))
+        // Data Query Language: SELECT
+        matches!(self, SELECT)
     }
     pub fn is_ddl(&self) -> bool {
-        (4..=4).contains(&(*self as u16))
+        // Data Definition Language: CREATE, ALTER, DROP
+        matches!(self, CREATE | ALTER | DROP)
+    }
+    pub fn is_dml(&self) -> bool {
+        // Data Manipulation Language: INSERT, UPDATE, DELETE
+        matches!(self, INSERT | UPDATE | DELETE)
     }
 }
 
@@ -166,6 +177,21 @@ impl Parser {
             },
             CREATE => {
                 process_grammar(self, CREATE, &[])?;
+            },
+            INSERT => {
+                process_grammar(self, INSERT, &[])?;
+            },
+            UPDATE => {
+                process_grammar(self, UPDATE, &[])?;
+            },
+            DELETE => {
+                process_grammar(self, DELETE, &[])?;
+            },
+            ALTER => {
+                process_grammar(self, ALTER, &[])?;
+            },
+            DROP => {
+                process_grammar(self, DROP, &[])?;
             },
             SEMICOLON => {
                 self.next();
