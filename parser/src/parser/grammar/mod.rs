@@ -1,10 +1,11 @@
+pub mod dialect;
 mod process;
 mod utils;
 
 pub use process::process_grammar;
 pub use utils::template::TemplateConfig;
 
-use super::ast::SyntaxKind;
+use crate::parser::ast::SyntaxKind;
 
 /// Possible grammar rules to be parsed
 pub enum Grammar {
