@@ -59,6 +59,9 @@ pub enum SyntaxKind {
     GROUP_BY,
 
     CREATE,
+    ALTER,
+    DROP,
+    TRUNCATE,
 
     TABLE,
 
@@ -72,11 +75,21 @@ pub enum SyntaxKind {
     PARENTHESES_END,
     VALUES,
     DEFINITION,
+
     EQUAL,
     GT,
     LT,
+    LEQT,
+    GEQT,
+
     AND,
     OR,
+    NOT,
+
+    TRUE,
+    FALSE,
+    BOOLEAN_OP,
+
     GROUP,
     ORDER,
     BY,
@@ -84,19 +97,22 @@ pub enum SyntaxKind {
     ASC,
     DISTINCT,
 
-    COMPARE,
-    GREATER,
-    LESS,
+    COMPARISON,
     EMPTY,
     ROOT,
 }
 
 impl SyntaxKind {
     pub fn is_dql(&self) -> bool {
-        (2..=3).contains(&(*self as u16))
+        //(2..=3).contains(&(*self as u16))
+        *self == SELECT
     }
     pub fn is_ddl(&self) -> bool {
-        (4..=4).contains(&(*self as u16))
+        //(4..=4).contains(&(*self as u16))
+        match *self {
+            CREATE | ALTER | DROP | TRUNCATE => true,
+            _ => false,
+        }
     }
 }
 
