@@ -1,7 +1,7 @@
 use logos::Logos;
 
 /// Possible tokens when parsing the Sql code
-#[derive(Logos, Debug)]
+#[derive(Logos,Clone, Debug, PartialEq)]
 #[logos(skip r"[ \t\n\f]+")]
 pub enum Token {
     #[regex("(?i)SELECT")]
@@ -87,6 +87,8 @@ pub enum Token {
 
     #[token(")")]
     ParenthesesEnd,
+    
+    Error
 }
 
 ///to_syntax method won't b used in the parser because some tokens
