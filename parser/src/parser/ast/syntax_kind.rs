@@ -17,6 +17,9 @@ pub enum SyntaxKind {
     TRUNCATE,
 
     TABLE,
+    COLUMN,
+    NAME,
+    TYPE,
 
     IDENTIFIER,
     TEXT,
