@@ -1,39 +1,36 @@
 use std::cell::RefCell;
 use std::fmt::Display;
-use std::marker::PhantomData;
 use std::rc::Rc;
-use std::rc::Weak;
 
 use super::ast_trait::Ast;
 use super::errors::AstErr;
 use super::syntax_kind::SyntaxKind;
-use crate::parser::grammar::dialect::Dialect;
+
+
 
 ///Represents the nodes of our AST
 ///in the simplest and generic way.
 ///The Dialect trait will deal with the grammar
 ///and compatibility between Nodes
 
-#[derive(Debug)]
-pub enum TreeNode<D: Dialect> {
+#[derive(Debug, Clone)]
+pub enum TreeNode {
     Terminal {
         //😭
-        parent: RefCell<Option<Weak<TreeNode<D>>>>,
+        //parent: Option<Rc<RefCell<TreeNode>>>,
         kind: SyntaxKind,
         text: String,
-        _pd: PhantomData<D>,
     },
     NonTerminal {
         //😭
-        parent: RefCell<Option<Weak<TreeNode<D>>>>,
+        //parent: Option<Rc<RefCell<Box<TreeNode>>>>,
         kind: SyntaxKind,
         //😭
-        children: Vec<RefCell<Rc<TreeNode<D>>>>,
-        _pd: PhantomData<D>,
+        children: Vec<Rc<RefCell<Box<TreeNode>>>>,
     },
 }
 
-impl<D: Dialect> TreeNode<D> {
+impl TreeNode {
     pub fn get_kind(&self) -> SyntaxKind {
         match self {
             TreeNode::Terminal { ref kind, .. } => kind.clone(),
@@ -41,40 +38,71 @@ impl<D: Dialect> TreeNode<D> {
         }
     }
 
+    /*pub fn get_parent(&mut self) -> &mut Option<Rc<RefCell<TreeNode>>> 
+    {
+        match self {
+            TreeNode::NonTerminal{ref mut parent,..} => parent.borrow_mut(),
+            TreeNode::Terminal{ref mut parent,..} => parent.borrow_mut(),
+        }
+    }*/
+
     pub fn to_tree<A>(self) -> A
     where
-        A: Ast<D>,
+        A: Ast<Self>,
     {
         A::from_node(self)
     }
 
-    pub(super) fn add(&mut self, child: Self) -> Result<(), AstErr> {
-        D::are_compatible(&child, self)?;
+    pub fn add(&mut self, child: TreeNode) -> Result<(), AstErr> {
         match self {
             TreeNode::Terminal { .. } => Err(AstErr::TerminalNodeChildAdition(self.to_string())),
-            TreeNode::NonTerminal { ref mut children, .. } => {
-                children.push(RefCell::new(Rc::new(child)));
+            TreeNode::NonTerminal {ref mut children, .. } => {
+                /*if children.is_empty() {
+                    child.get_parent().borrow_mut() = Rc::new(RefCell::new(self));
+                } else {
+                    child.get_parent = children[0]?.get_parent().clone();
+                }*/
+                children.push(Rc::new(RefCell::new(Box::new(child))));
                 Ok(())
             },
         }
     }
+    pub fn new_term(kind: SyntaxKind, text: String) -> TreeNode{
+        TreeNode::Terminal{
+            //parent: None,
+            kind,
+            text
+        }
+    }
+    pub fn new_no_term(kind: SyntaxKind, children: Vec<Box<TreeNode>> ) -> TreeNode{
+        TreeNode::NonTerminal{
+            //parent: None,
+            kind,
+            children: children.into_iter().map(|member| Rc::new(RefCell::new(member))).collect::<Vec<_>>()
+        }
+    }
+    
+    fn print(indent: usize, node: &TreeNode, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for _ in 0..indent{
+            write!(f,"\t");
+        };
+        match node {
+            Self::NonTerminal{ref kind, ref children} => {
+                write!(f, "• {:?}", kind);
+                for child in children {
+                    write!(f,"\n");
+                    Self::print(indent + 1, &(**child.borrow()), f);
+                };
+                std::fmt::Result::Ok(())
+            },
+            Self::Terminal { ref kind, ref text} => write!(f, "• {:?}: {}", kind, text)
+        }
+    }
 }
 
-impl<D: Dialect> Display for TreeNode<D> {
+impl Display for TreeNode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Terminal { ref kind, ref text, .. } => write!(f, "{:?} - {}", kind, text),
-            Self::NonTerminal { kind, children, .. } => {
-                write!(
-                    f,
-                    "{:?} - {:?} ",
-                    kind,
-                    children
-                        .iter()
-                        .map(|child| (**child.borrow()).get_kind())
-                        .collect::<Vec<SyntaxKind>>()
-                )
-            },
-        }
+        Self::print(0, self, f);
+        std::fmt::Result::Ok(())
     }
 }
