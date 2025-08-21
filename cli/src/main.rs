@@ -1,3 +1,4 @@
+use sql_parser::{parse, pg_ast::PgAst, pg_parser::PgParser};
 // fn print(indent: usize, element: SyntaxElement) {
 //     let kind: SyntaxKind = element.kind();
 //     print!("{:indent$}", "", indent = indent);
@@ -23,5 +24,10 @@
 //
 
 fn main() {
-    println!("Parser has to be implemented!")
+    let parsed = parse::<_, PgParser, _, _, PgAst>("CREATE TABLE ");
+    match parsed {
+        Ok(val) => println!("{}", val),
+        Err(errs) => println!("{:?}", errs)
+    }
+   
 }

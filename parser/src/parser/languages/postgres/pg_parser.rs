@@ -42,22 +42,26 @@ fn start<'src, I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src,Token>>>
 where
     I: ValueInput<'src, Token = Token, Span = SimpleSpan>
 {
-    any().to(TreeNode::new_term(SyntaxKind::TEXT, "works".to_string()))
+    create_table()
 }
 
-/*fn create_table<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>>
-where
-{
-    I: ValueInput<'src, Token = Token, Span = SimpleSpan>
-{
-    //let create = just(Token::Create).to;
-    //let table = just(Token::Table);
-    todo()
-}
-
-fn column<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>>
+fn create_table<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>>
 where
     I: ValueInput<'src, Token = Token, Span = SimpleSpan>
 {
+    just(Token::Create)
+        .ignore_then(just(Token::Table))
+        .to(TreeNode::new_no_term(SyntaxKind::CREATE,
+            vec![Box::new(TreeNode::new_no_term(SyntaxKind::TABLE, vec![]))]))
+}
+
+/*fn column<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>>
+where
+    I: ValueInput<'src, Token = Token, Span = SimpleSpan>
+{
+    let name = select!{
+                Token::Identifier(x) => TreeNode::new_term(SyntaxKind::NAME, x),
+    };
+   // let column_type = select!{Token::Identifier(type_name) => TreeNode::new_term(SyntaxKind::TYPE, type_name)};
     todo()
 }*/
