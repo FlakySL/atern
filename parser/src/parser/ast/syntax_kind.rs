@@ -20,6 +20,7 @@ pub enum SyntaxKind {
     COLUMN,
     NAME,
     TYPE,
+    TABLE_BODY,
 
     IDENTIFIER,
     TEXT,
