@@ -55,13 +55,15 @@ where
             vec![Box::new(TreeNode::new_no_term(SyntaxKind::TABLE, vec![]))]))
 }
 
-/*fn column<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>>
+fn column<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>>
 where
     I: ValueInput<'src, Token = Token, Span = SimpleSpan>
 {
-    let name = select!{
+    let column_name = select!{
                 Token::Identifier(x) => TreeNode::new_term(SyntaxKind::NAME, x),
     };
-   // let column_type = select!{Token::Identifier(type_name) => TreeNode::new_term(SyntaxKind::TYPE, type_name)};
-    todo()
-}*/
+    let column_type = select!{Token::Identifier(type_name) => TreeNode::new_term(SyntaxKind::TYPE, type_name)};
+    column_name
+        .then(column_type)
+        .map(|(n,t)| TreeNode::new_no_term(SyntaxKind::COLUMN, vec![Box::new(n), Box::new(t)]))
+}
