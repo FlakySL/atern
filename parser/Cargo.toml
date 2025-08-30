@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+chumsky = "0.10.1"
 logos = "0.15.0"
-rowan = "0.16.1"
 thiserror = "2.0.12"
