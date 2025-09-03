@@ -105,9 +105,13 @@ where
             }
             node
         }),
-        just(Token::References).ignore_then(select!{ Token::Identifier(x) => TreeNode::new_term(SyntaxKind::NAME, x) }).map(|tn|
-            TreeNode::new_no_term(SyntaxKind::FOREGEIN_KEY, vec![Box::new(tn)])
-            )
+        just(Token::References).ignore_then(select!{ Token::Identifier(x) => TreeNode::new_term(SyntaxKind::NAME, x) }).then(select!{ Token::Identifier(y) => TreeNode::new_term(SyntaxKind::NAME, y)}.delimited_by(just(Token::ParenthesesStart), just(Token::ParenthesesEnd)).or_not()).map(|(tn,pn)|{
+                let mut node = TreeNode::new_no_term(SyntaxKind::FOREGEIN_KEY, vec![Box::new(tn)]);
+                if let Some(tc) = pn {
+                    node.push(tc);
+                }
+                node
+            })
     ))
     .map(Box::new)
     .repeated()
