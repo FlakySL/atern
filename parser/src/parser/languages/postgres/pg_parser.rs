@@ -87,7 +87,32 @@ where
     };
     let column_type = select!{Token::Identifier(type_name) => TreeNode::new_term(SyntaxKind::TYPE, type_name),
     };
+    let column_constraints = choice((
+        just(Token::Null).to(TreeNode::new_term(SyntaxKind::NULL, "NULL".to_string())),
+        just(Token::Not).then(just(Token::Null)).to(TreeNode::new_term(SyntaxKind::NOT_NULL, "NOT NULL".to_string())),
+        just(Token::Primary).then(just(Token::Key)).to(TreeNode::new_term(SyntaxKind::PRIMARY_KEY, "PRYMARY KEY".to_string())),
+        just(Token::Unique).then(just(Token::Nulls).then(just(Token::Not).or_not()).then(just(Token::Distinct)).or_not()).map(|(_, n)| {
+            let mut node = TreeNode::new_no_term(SyntaxKind::UNIQUE, vec![]);
+            if let Some(((_,no), di)) = n {
+                node.push(TreeNode::new_term(SyntaxKind::NULLS, "NULLS".to_string()));
+                if let (Some(Token::Not), Token::Distinct) = (no, di) {
+                    node.push(TreeNode::new_term(SyntaxKind::NOT, "NOT".to_string()));
+                    node.push(TreeNode::new_term(SyntaxKind::DISTINCT, "DISTINCT".to_string()));
+                }
+                else {
+                    node.push(TreeNode::new_term(SyntaxKind::DISTINCT, "DISTINCT".to_string()));
+                }
+            }
+            node
+        }),
+    ))
+    .map(Box::new)
+    .repeated()
+    .collect::<Vec<_>>()
+    .map(|v| TreeNode::new_no_term(SyntaxKind::COLUMN_CONSTRAINTS, v));
+    
     column_name
         .then(column_type)
-        .map(|(n,t)| TreeNode::new_no_term(SyntaxKind::COLUMN, vec![Box::new(n), Box::new(t)]))
+        .then(column_constraints)
+        .map(|((n,t), c)| TreeNode::new_no_term(SyntaxKind::COLUMN, vec![Box::new(n), Box::new(t), Box::new(c)]))
 }

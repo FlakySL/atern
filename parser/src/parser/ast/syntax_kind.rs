@@ -18,6 +18,8 @@ pub enum SyntaxKind {
 
     TABLE,
     COLUMN,
+    COLUMN_CONSTRAINTS,
+    
     NAME,
     TYPE,
     TABLE_BODY,
@@ -42,6 +44,12 @@ pub enum SyntaxKind {
     AND,
     OR,
     NOT,
+    
+    NULL,
+    NOT_NULL,
+    NULLS,
+    UNIQUE,
+    PRIMARY_KEY,
 
     TRUE,
     FALSE,
@@ -54,7 +62,6 @@ pub enum SyntaxKind {
     ASC,
     DISTINCT,
 
-    COMPARISON,
     EMPTY,
     ROOT,
 }

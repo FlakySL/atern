@@ -45,6 +45,21 @@ pub enum Token {
 
     #[regex("(?i)BY")]
     By,
+    
+    #[regex("(?i)NULL")]
+    Null,
+    
+    #[regex("(?i)NULLS")]
+    Nulls,
+    
+    #[regex("(?i)KEY")]
+    Key,
+    
+    #[regex("(?i)PRIMARY")]
+    Primary,
+    
+    #[regex("(?i)UNIQUE")]
+    Unique,
 
     #[regex(r#"(?:"[^"]*"|'[^']*')"#, |lex| {
         let content = lex.slice();
