@@ -50,6 +50,7 @@ pub enum SyntaxKind {
     NULLS,
     UNIQUE,
     PRIMARY_KEY,
+    FOREGEIN_KEY,
 
     TRUE,
     FALSE,

@@ -105,6 +105,9 @@ where
             }
             node
         }),
+        just(Token::References).ignore_then(select!{ Token::Identifier(x) => TreeNode::new_term(SyntaxKind::NAME, x) }).map(|tn|
+            TreeNode::new_no_term(SyntaxKind::FOREGEIN_KEY, vec![Box::new(tn)])
+            )
     ))
     .map(Box::new)
     .repeated()

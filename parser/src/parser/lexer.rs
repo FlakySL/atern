@@ -60,6 +60,9 @@ pub enum Token {
     
     #[regex("(?i)UNIQUE")]
     Unique,
+    
+    #[regex("(?i)REFERENCES")]
+    References,
 
     #[regex(r#"(?:"[^"]*"|'[^']*')"#, |lex| {
         let content = lex.slice();
