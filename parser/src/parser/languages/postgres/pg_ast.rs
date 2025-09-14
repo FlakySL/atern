@@ -18,7 +18,7 @@ impl Ast<TreeNode> for PgAst {
     }
     fn from_node(seed: TreeNode) -> Self{
         let mut instance = Self::new();
-        let _ = instance.root.add(seed).unwrap();
+        instance.root.add(seed).unwrap();
         instance
     }
 }

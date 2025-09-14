@@ -34,6 +34,8 @@ pub enum SyntaxKind {
     PARENTHESES_END,
     VALUES,
     DEFINITION,
+    
+    ON,
 
     EQUAL,
     GT,
@@ -54,6 +56,7 @@ pub enum SyntaxKind {
 
     TRUE,
     FALSE,
+    STRING,
     BOOLEAN_OP,
 
     GROUP,
@@ -65,6 +68,19 @@ pub enum SyntaxKind {
 
     EMPTY,
     ROOT,
+    
+    MATCH_SIMPLE,
+    MATCH_PARTIAL,
+    MATCH_FULL,
+    
+    ON_DELETE,
+    ON_UPDATE,
+    
+    CASCADE,
+    SET_NULL,
+    SET_DEFAULT,
+    NO_ACTION,
+    RESTRICT,
 }
 
 use SyntaxKind::*;

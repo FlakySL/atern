@@ -10,6 +10,15 @@ pub enum Token {
     #[regex("(?i)CREATE")]
     Create,
 
+    #[regex("(?i)DELETE")]
+    Delete,
+    
+    #[regex("(?i)UPDATE")]
+    Update,
+    
+    #[regex("(?i)ALTER")]
+    Alter,
+
     #[regex("(?i)TABLE")]
     Table,
 
@@ -27,12 +36,39 @@ pub enum Token {
 
     #[regex("(?i)NOT")]
     Not,
+    
+    #[regex("(?i)TRUE")]
+    True,
+    
+    #[regex("(?i)FALSE")]
+    False,
+    
+    #[regex("(?i)NO")]
+    No,
 
     #[regex("(?i)GROUP")]
     Group,
 
     #[regex("(?i)DISTINCT")]
     Distinct,
+    
+    #[regex("(?i)RESTRICT")]
+    Restrict,
+    
+    #[regex("(?i)FULL")]
+    Full,
+    
+    #[regex("(?i)SIMPLR")]
+    Simple,
+    
+    #[regex("(?i)PARTIAL")]
+    Partial,    
+    
+    #[regex("(?i)CASCADE")]
+    Cascade,
+
+    #[regex("(?i)DEFAULT")]
+    Default,
 
     #[regex("(?i)ASC")]
     ASC,
@@ -45,6 +81,15 @@ pub enum Token {
 
     #[regex("(?i)BY")]
     By,
+    
+    #[regex("(?i)ON")]
+    On,  
+    
+    #[regex("(?i)SET")]
+    Set,  
+    
+    #[regex("(?i)ACTION")]
+    Action,
     
     #[regex("(?i)NULL")]
     Null,
@@ -63,6 +108,9 @@ pub enum Token {
     
     #[regex("(?i)REFERENCES")]
     References,
+
+    #[regex("(?i)MATCH")]
+    Match,
 
     #[regex(r#"(?:"[^"]*"|'[^']*')"#, |lex| {
         let content = lex.slice();

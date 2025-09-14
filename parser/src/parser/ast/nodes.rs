@@ -67,7 +67,14 @@ impl TreeNode {
             },
         }
     }
-    pub fn new_term(kind: SyntaxKind, text: String) -> TreeNode{
+    pub fn new_term(kind: SyntaxKind, text: &str) -> TreeNode{
+        TreeNode::Terminal{
+            //parent: None,
+            kind,
+            text: text.to_string()
+        }
+    }
+    pub fn new_term_s(kind: SyntaxKind, text: String) -> TreeNode{
         TreeNode::Terminal{
             //parent: None,
             kind,
@@ -90,8 +97,8 @@ impl TreeNode {
             Self::NonTerminal{ref kind, ref children} => {
                 write!(f, "• {:?}", kind);
                 for child in children {
-                    write!(f,"\n");
-                    Self::print(indent + 1, &(**child.borrow()), f);
+                    writeln!(f);
+                    let _ = Self::print(indent + 1, &child.borrow(), f);
                 };
                 std::fmt::Result::Ok(())
             },
@@ -102,7 +109,7 @@ impl TreeNode {
 
 impl Display for TreeNode {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        Self::print(0, self, f);
+        let _ = Self::print(0, self, f);
         std::fmt::Result::Ok(())
     }
 }
