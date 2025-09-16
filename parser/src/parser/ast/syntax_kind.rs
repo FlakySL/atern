@@ -37,6 +37,7 @@ pub enum SyntaxKind {
     
     ON,
 
+    NOT_EQUAL,
     EQUAL,
     GT,
     LT,
@@ -46,6 +47,16 @@ pub enum SyntaxKind {
     AND,
     OR,
     NOT,
+    
+    ADD,
+    SUB,
+    MUL,
+    DIV,
+    MODULO,
+    EXPONENTIAL,
+    
+    NEG,
+    POS,
     
     NULL,
     NOT_NULL,
@@ -81,6 +92,10 @@ pub enum SyntaxKind {
     SET_DEFAULT,
     NO_ACTION,
     RESTRICT,
+    
+    TABLE_COL,
+    EXPRESSION,
+    CHECK,
 }
 
 use SyntaxKind::*;

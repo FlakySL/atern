@@ -7,14 +7,16 @@ use std::{
 
 use crate::parser::parser::parser::Parser as PP;
 use crate::parser::lexer::Token;
+use crate::boxed_vec;
 use logos::Logos;
 use super::pgsql::PostgreSQL;
-use crate::boxed_vec;
+use crate::parser::parser::utils::some_of;
 use crate::parser::ast::syntax_kind::SyntaxKind;
 use crate::parser::ast::nodes::TreeNode;
 use chumsky::{
     container::Container,
     prelude::*,
+    pratt::*,
     input::{Stream,ValueInput},
     error::Rich,
     extra::Err as CE,
@@ -97,16 +99,15 @@ where
     let column_type = select!{Token::Identifier(type_name) => TreeNode::new_term_s(SyntaxKind::TYPE, type_name),
     };
     
-    let column_constraints = set((
+    let column_constraints = some_of((
         just(Token::Null)
             .to(TreeNode::new_term(SyntaxKind::NULL, "NULL"))
             .or(just(Token::Not)
                     .then(just(Token::Null)).to(TreeNode::new_term(SyntaxKind::NOT_NULL, "NOT NULL"))
-        ).or_not(),
+        ),
         just(Token::Primary)
             .then(just(Token::Key))
-            .to(TreeNode::new_term(SyntaxKind::PRIMARY_KEY, "PRYMARY KEY"))
-            .or_not(),
+            .to(TreeNode::new_term(SyntaxKind::PRIMARY_KEY, "PRYMARY KEY")),
         just(Token::Unique)
         .then(just(Token::Nulls)
                 .then(just(Token::Not)
@@ -126,18 +127,14 @@ where
                 }
             }
             node
-        }).or_not(),
-        col_foregein_key().or_not(),
+        }),
+        just(Token::Check)
+            .ignore_then(inner_expr())
+            .map(|x| TreeNode::new_no_term(SyntaxKind::CHECK, boxed_vec![x])),
+        col_foregein_key(),
     ))
-    .map(|(n,pk,u,fk)|{
-        let mut base = TreeNode::new_no_term(SyntaxKind::COLUMN_CONSTRAINTS, vec![]);
-        for p in boxed_vec![n,pk,u,fk] {
-            if let Some(x) = *p{
-               base.push(x);
-            }
-        }
-        base
-    });
+    .map(|v|
+        TreeNode::new_no_term(SyntaxKind::COLUMN_CONSTRAINTS, v));
     
     column_name
         .then(column_type)
@@ -236,14 +233,82 @@ where
     todo()
 }
 
-fn innerexp_parser<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>>
+fn inner_expr<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>>
 where
     I: ValueInput<'src, Token = Token, Span = SimpleSpan>
-{
-    todo()
+{   recursive(|expr|{
+        let operand = choice((
+            number(),
+            boolean(),
+            string(),
+            identifier(),
+            expr.clone()
+        ));
+        let op = |o| just(o);
+        operand.pratt((
+            infix(left(1), op(Token::Or), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::OR, boxed_vec![l,r])
+            }),
+            infix(left(2), op(Token::And), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::AND, boxed_vec![l,r])
+            }),
+            prefix(3, op(Token::Not), |_, r, _|{
+                TreeNode::new_no_term(SyntaxKind::OR, boxed_vec![r])
+            }),
+            infix(none(5), op(Token::Equal), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::EQUAL, boxed_vec![l,r])
+            }),
+            infix(none(5), op(Token::UnEqual), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::NOT_EQUAL, boxed_vec![l,r])
+            }),
+            infix(none(5), op(Token::GT), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::GT, boxed_vec![l,r])
+            }),
+            infix(none(5), op(Token::LT), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::LT, boxed_vec![l,r])
+            }),
+            infix(none(5), op(Token::GEQT), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::GEQT, boxed_vec![l,r])
+            }),
+            infix(none(5), op(Token::LEQT), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::LEQT, boxed_vec![l,r])
+            }),
+            infix(left(8), op(Token::Plus), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::ADD, boxed_vec![l,r])
+            }),
+            infix(left(8), op(Token::Minus), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::SUB, boxed_vec![l,r])
+            }),
+            infix(left(9), op(Token::Star), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::MUL, boxed_vec![l,r])
+            }),
+            infix(left(9), op(Token::Slash), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::DIV, boxed_vec![l,r])
+            }),
+            infix(left(9), op(Token::Mod), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::MODULO, boxed_vec![l,r])
+            }),
+            infix(left(10), op(Token::Exp), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::EXPONENTIAL, boxed_vec![l,r])
+            }),
+            prefix(13, op(Token::Minus), |_, r, _|{
+                TreeNode::new_no_term(SyntaxKind::NEG, boxed_vec![r])
+            }),
+            prefix(13, op(Token::Plus), |_, r, _|{
+                TreeNode::new_no_term(SyntaxKind::POS, boxed_vec![r])
+            }),
+            infix(left(16), op(Token::Dot), |l, _, r, _|{
+                TreeNode::new_no_term(SyntaxKind::TABLE_COL, boxed_vec![l,r])
+            }),
+        ))
+    })
+    .delimited_by(just(Token::ParenthesesStart), just(Token::ParenthesesEnd))
+    .map(|all|
+            TreeNode::new_no_term(SyntaxKind::EXPRESSION, boxed_vec![all])
+        )
 }
 
-fn boolean<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>>
+fn boolean<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>> + Clone
 where
     I: ValueInput<'src, Token = Token, Span = SimpleSpan>
 {
@@ -254,16 +319,16 @@ where
         .or(r#false)
 }
 
-fn identifier<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>>
+fn identifier<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>> + Clone
 where
-    I: ValueInput<'src, Token = Token, Span = SimpleSpan>
+    I: ValueInput<'src, Token = Token, Span = SimpleSpan> 
 {
     select!{
         Token::Identifier(x) => TreeNode::new_term_s(SyntaxKind::IDENTIFIER, x),
     }
 }
 
-fn number<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>>
+fn number<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>> + Clone
 where
     I: ValueInput<'src, Token = Token, Span = SimpleSpan>
 {
@@ -272,7 +337,7 @@ where
     }
 }
 
-fn string<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>>
+fn string<'src,I>() -> impl CP<'src, I ,TreeNode, CE<Rich<'src, Token>>> + Clone 
 where
     I: ValueInput<'src, Token = Token, Span = SimpleSpan>
 {
@@ -280,11 +345,3 @@ where
         Token::Text(x) => TreeNode::new_term_s(SyntaxKind::STRING, x),
     }
 }
-
-/*fn test<'src, I>() -> LinkedList<Rc<RefCell<Box<dyn CP<'src, I, TreeNode> + 'static >>>>
-where
-    I: ValueInput<'src, Token = Token, Span = SimpleSpan>
-{
-    parser_list!(string(), boolean(), number())
-}
-*/

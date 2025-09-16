@@ -2,7 +2,7 @@ use sql_parser::{parse, pg_ast::PgAst, pg_parser::PgParser};
 
 fn main() {
     let parsed = parse::<_, PgParser, _, _, PgAst>("CREATE TABLE JAIMANITAS(
-            ID INT UNIQUE NULLS DISTINCT PRIMARY KEY,
+            ID INT UNIQUE NULLS DISTINCT PRIMARY KEY CHECK(jaimanitas.id <> 0),
             NAME STRING NOT NULL, 
             CAR INT References parking_lot (Car));");
     
@@ -11,5 +11,4 @@ fn main() {
         Ok(val) => println!("{}", val),
         Err(errs) => println!("{:?}", errs)
     }
-   
 }

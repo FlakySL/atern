@@ -31,72 +31,67 @@ macro_rules! boxed_vec{
     }
 }
 
-/*
-struct SomeOf_<T>{
+
+pub struct SomeOf_<T>{
     parsers: T,
 }
 
-type SomeOf<T> = Ext<SomeOf_<T>>;
-
-pub fn some_of<T>(parsers: T) -> SomeOf<T>{
-   SomeOf{parsers} 
-}
+pub type SomeOf<T> = Ext<SomeOf_<T>>;
 
 macro_rules! impl_some_of_for_tuple {
     () => {};
-    ($Head:ident $($X:ident)*) => {
-        impl_some_of_for_tuple!($($X)*);
-        impl_some_of_for_tuple!(@recur $Head $($X)*);
-    };
-    (@recur $Head:ident) => {
-        impl<'src, I, E, $Head, O> ExtParser<'src, I, O, E> for SomeOf_<($Head,)>
-        where
-            I: Input<'src>,
-            E: ParserExtra<'src, I>,
-            $Head:  Parser<'src, I, O, E>,
-        {
-            fn parse(&self, inp: &mut InputRef<'src, '_, I, E>) -> Result<Vec<Box<O>>, E>  {
-                let mut result = vec![];
-                let before = inp.save();
-                
-                if let Ok(out) = self.parsers.0.parse(inp) {
-                    result.push(Box::new(out));
-                }
-                result
-            }
-        }
+    ($head:ident $Head:ident $($x:ident $X:ident)*) => {
+        impl_some_of_for_tuple!(@recur $head $Head $($x $X)*);
+        impl_some_of_for_tuple!($($x $X)*);
     };
     
-    (@recur $Head:ident $($X:ident)+) => {
+    (@recur $head:ident $Head:ident $($x:ident $X:ident)*) => {
         #[allow(unused_variables, non_snake_case)]
-        impl<'src, I, E, $Head, $($X),*, O> ExtParser<'src, I, O, E> for SomeOf_<($($X,)*)>
+        impl<'src, I, E, $Head, $($X,)* O> ExtParser<'src, I, Vec<Box<O>>, E> for SomeOf_<($Head, $($X,)*)>
         where
             I: Input<'src>,
             E: ParserExtra<'src, I>,
+            $Head: Parser<'src, I, O, E>,
             $($X: Parser<'src, I, O, E>),*
         {
-            fn parse(&self, inp: &mut InputRef<'src, '_, I, E>) -> Result<Vec<Box<O>>, E> {
-                let count: u32 = impl_some_of_for_tuple! (@count $($X),*);
-                let result = Vec::with_capacity::<Box<O>>(count);
-                let mut used = vec![false; count];
+            fn parse(&self, inp: &mut InputRef<'src, '_, I, E>) -> Result<Vec<Box<O>>, E::Error> {
+                let count: usize = impl_some_of_for_tuple! (@count $($X),*);
+                let mut result: Vec<Box<O>> = Vec::with_capacity(count);
+                let mut used: u32 = 0;
+                let ($head, $($x),*) = &self.parsers;
 
                 loop{
-                    let mut parsed = false;
-                    for i in 0..count {
-                        if !used[i] {
+                    let begin = inp.cursor();
+                    let mut i = 1;
+                    
+                    if used & i == 0 {
                             let before = inp.save();
-                            match self.parsers.i.parse(inp){
+                            match inp.parse(&$head){
                                 Ok(out) => {
                                     result.push(Box::new(out));
-                                    used[i] = true;
-                                    parsed = true;
+                                    used |= i;
                                 },
-                                Err(()) => inp.rewind(before.clone()),
+                                Err(_) => inp.rewind(before.clone()),
+                            };
+                    }
+                    i <<= 1;
+                    
+                    $(
+                        if used & i == 0 {
+                            let before = inp.save();
+                            match inp.parse(&$x){
+                                Ok(out) => {
+                                    result.push(Box::new(out));
+                                    used |= i;
+                                },
+                                Err(_) => inp.rewind(before.clone()),
                             };
                         }
-                    }
-                    if !parsed || result.size() == result.capacity() {
-                        Ok(result)
+                        i <<= 1;
+                    )*
+
+                    if begin == inp.cursor() {
+                        return Ok(result);
                     }
                 }
             }
@@ -105,7 +100,7 @@ macro_rules! impl_some_of_for_tuple {
     
     (@count $($X:ident),*) => {
         {
-            let types_count = 1;
+            let mut types_count = 1;
             $(
                 let _:$X;
                 types_count += 1;
@@ -115,37 +110,39 @@ macro_rules! impl_some_of_for_tuple {
     };
 }
 
-impl_some_of_for_tuple!(A_ B_ C_ D_ E_ F_ G_ H_ I_ J_ K_ L_ M_ N_ O_ P_ Q_ R_ S_ T_ U_ V_ W_ X_ Y_ Z_);
+impl_some_of_for_tuple!(a_ A_
+                        b_ B_
+                        c_ C_
+                        d_ D_
+                        e_ E_
+                        f_ F_
+                        g_ G_
+                        h_ H_
+                        i_ I_
+                        j_ J_
+                        k_ K_
+                        l_ L_
+                        m_ M_
+                        n_ N_
+                        o_ O_
+                        p_ P_
+                        q_ Q_
+                        r_ R_
+                        s_ S_ 
+                        t_ T_
+                        u_ U_ 
+                        v_ V_
+                        w_ W_
+                        x_ X_
+                        y_ Y_ 
+                        z_ Z_ );
 
-
-fn handle_parsers<'src, I, O, E, M>(input: &mut I, parsers: Vec<PPtr>) -> Vec<O>
-where 
-    PPtr: RcRa<Box<OrNot<dyn Parser<I,O,E>>>>
-    I: Input<'src>,
-    E: ParserExtra<'src, I>,
-    M: Mode
-{
-    let mut result: Vec<O> = vec![];
-    let mut tmp: Vec<PPtr> = vec![];
-    
-    loop {
-        for parser in parsers {
-            let before = input.save();
-            match parser.go<M>(input) {
-                Ok(Some(r)) => result.push(r),
-                Ok(None) => {
-                    input.rewind(before);
-                    tmp.push(parser);
-                },
-                _ => panic!("Unreacheable"),
-            };
-        }
-        if tmp.empty() || parsers.empty(){
-            break;
-        }
-        parsers = tmp;
-        tmp = vec![];
-    }
-    result
+pub(crate) fn some_of<T>(parsers: T) -> SomeOf<T>{
+   Ext(SomeOf_{parsers}) 
 }
-*/
+
+macro_rules! boxed_vec{
+    ($($x:expr),*) =>{
+        vec![$(Box::new($x),)* ]
+    }
+}

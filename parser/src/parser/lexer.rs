@@ -88,6 +88,9 @@ pub enum Token {
     #[regex("(?i)SET")]
     Set,  
     
+    #[regex("(?i)CHECK")]
+    Check,
+    
     #[regex("(?i)ACTION")]
     Action,
     
@@ -125,13 +128,34 @@ pub enum Token {
     Number(String),
 
     #[token("*")]
-    All,
+    Star,
+    
+    #[token("/")]
+    Slash,
+    
+    #[token("%")]
+    Mod,
+    
+    #[token("^")]
+    Exp,
+    
+    #[token("+")]
+    Plus,
+    
+    #[token("-")]
+    Minus,
 
     #[token(",")]
     Comma,
+    
+    #[token(".")]
+    Dot,
 
     #[token("=")]
     Equal,
+    
+    #[regex(r"(!=)|(<>)")]
+    UnEqual,
 
     #[token(">=")]
     GEQT,
