@@ -14,24 +14,24 @@ use super::syntax_kind::SyntaxKind;
 ///and compatibility between Nodes
 
 #[derive(Debug, Clone)]
-pub enum TreeNode {
+pub enum TreeNode<Kind: SyntaxKind> {
     Terminal {
         //😭
         //parent: Option<Rc<RefCell<TreeNode>>>,
-        kind: SyntaxKind,
+        kind: Kind,
         text: String,
     },
     NonTerminal {
         //😭
         //parent: Option<Rc<RefCell<Box<TreeNode>>>>,
-        kind: SyntaxKind,
+        kind: Kind,
         //😭
-        children: Vec<Rc<RefCell<Box<TreeNode>>>>,
+        children: Vec<Rc<RefCell<Box<TreeNode<Kind>>>>>,
     },
 }
 
-impl TreeNode {
-    pub fn get_kind(&self) -> SyntaxKind {
+impl <Kind: SyntaxKind> TreeNode<Kind> {
+    pub fn get_kind(&self) -> Kind {
         match self {
             TreeNode::Terminal { ref kind, .. } => kind.clone(),
             TreeNode::NonTerminal { ref kind, .. } => kind.clone(),
@@ -48,12 +48,12 @@ impl TreeNode {
 
     pub fn to_tree<A>(self) -> A
     where
-        A: Ast<Self>,
+        A: Ast<Kind>,
     {
         A::from_node(self)
     }
 
-    pub fn add(&mut self, child: TreeNode) -> Result<(), AstErr> {
+    pub fn add(&mut self, child: TreeNode<Kind>) -> Result<(), AstErr> {
         match self {
             TreeNode::Terminal { .. } => Err(AstErr::TerminalNodeChildAdition(self.to_string())),
             TreeNode::NonTerminal {ref mut children, .. } => {
@@ -67,21 +67,21 @@ impl TreeNode {
             },
         }
     }
-    pub fn new_term(kind: SyntaxKind, text: &str) -> TreeNode{
+    pub fn new_term(kind: Kind, text: &str) -> TreeNode<Kind>{
         TreeNode::Terminal{
             //parent: None,
             kind,
             text: text.to_string()
         }
     }
-    pub fn new_term_s(kind: SyntaxKind, text: String) -> TreeNode{
+    pub fn new_term_s(kind: Kind, text: String) -> TreeNode<Kind>{
         TreeNode::Terminal{
             //parent: None,
             kind,
             text
         }
     }
-    pub fn new_no_term(kind: SyntaxKind, children: Vec<Box<TreeNode>> ) -> TreeNode{
+    pub fn new_no_term(kind: Kind, children: Vec<Box<TreeNode<Kind>>> ) -> TreeNode<Kind>{
         TreeNode::NonTerminal{
             //parent: None,
             kind,
@@ -89,7 +89,7 @@ impl TreeNode {
         }
     }
     
-    fn print(indent: usize, node: &TreeNode, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn print(indent: usize, node: &TreeNode<Kind>, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for _ in 0..indent{
             write!(f,"\t");
         };
@@ -107,7 +107,7 @@ impl TreeNode {
     }
 }
 
-impl Display for TreeNode {
+impl <Kind: SyntaxKind> Display for TreeNode<Kind> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let _ = Self::print(0, self, f);
         std::fmt::Result::Ok(())

@@ -8,17 +8,17 @@ use chumsky::{
     extension::v1::*
 };
 
-impl Container<TreeNode> for TreeNode{
-    fn push(&mut self, item: TreeNode){
+impl <K: SyntaxKind> Container<TreeNode<K>> for TreeNode<K>{
+    fn push(&mut self, item: TreeNode<K>){
         self.add(item).unwrap();
     }
 }
 
-impl Default for TreeNode{
+impl <K: SyntaxKind> Default for TreeNode<K>{
     fn default() -> Self{
         TreeNode::NonTerminal{
             //parent: None,
-            kind: SyntaxKind::ROOT,
+            kind: K::default(),
             children: vec![],
         }
     }

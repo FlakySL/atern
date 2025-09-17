@@ -3,7 +3,7 @@ use thiserror::Error;
 
 /// Possible errors at the time of generating the ast
 #[derive(Error, Debug)]
-pub enum ParserError {
+pub enum ParserError<K: SyntaxKind> {
     // TODO: this error should be in LexerError and not in ParserError
     #[error("Invalid Token {0}")]
     InvalidToken(String),
@@ -16,17 +16,17 @@ pub enum ParserError {
     /// This error is triggered when it expects a specific node and receives a
     /// node of another type.
     #[error("Expected {0} found {1}")]
-    ExpectedType(SyntaxKind, SyntaxKind),
+    ExpectedType(K, K),
 
     /// This error is triggered when the node does not match with the expected
     /// by the context
     #[error("Unexpected Node {0}")]
-    UnexpectedNode(SyntaxKind),
+    UnexpectedNode(K),
 
     /// This error is triggered when the definition of the context is incomplete
     /// e.g.: SELECT; (without passing any body)
     #[error("Expected Body for {0}")]
-    ExpectedBodyFor(SyntaxKind),
+    ExpectedBodyFor(K),
 
     /// this error appears when the content is finished but the current grammar
     /// rule needs more content to complete.

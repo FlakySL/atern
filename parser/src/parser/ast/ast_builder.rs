@@ -1,15 +1,17 @@
 use super::ast_trait::Ast;
 use super::errors::AstErr;
 use super::nodes::TreeNode;
+use super::syntax_kind::SyntaxKind;
 
-trait AstBuilder<D, N, T>
+trait AstBuilder<D, K, T>
 where
-    T: Ast<N>,
+    K: SyntaxKind,
+    T: Ast<K>,
 {
-    fn add(&self, node: N) -> Result<(), AstErr>;
+    fn add(&self, node: TreeNode<K>) -> Result<(), AstErr>;
     fn tree(&self) -> &T;
     fn build(&self) -> T;
-    fn checkpoint(&self) -> Option<&TreeNode>;
+    fn checkpoint(&self) -> Option<&TreeNode<K>>;
     fn new() -> Self;
-    fn back(&self) -> Option<&TreeNode>;
+    fn back(&self) -> Option<&TreeNode<K>>;
 }

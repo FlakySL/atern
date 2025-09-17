@@ -1,22 +1,23 @@
 use crate::parser::ast::ast_trait::Ast;
 use crate::parser::ast::nodes::TreeNode;
+use super::pg_kind::PgKind;
 use std::borrow::Borrow;
 use std::fmt::Display;
 
 pub struct PgAst{
-    root: TreeNode
+    root: TreeNode<PgKind>
 }
 
-impl Ast<TreeNode> for PgAst {
+impl Ast<PgKind> for PgAst {
     fn new() -> Self{
         PgAst{
             root: TreeNode::default()
         }
     }
-    fn root(&self) -> &TreeNode{
+    fn root(&self) -> &TreeNode<PgKind>{
         self.root.borrow()
     }
-    fn from_node(seed: TreeNode) -> Self{
+    fn from_node(seed: TreeNode<PgKind>) -> Self{
         let mut instance = Self::new();
         instance.root.add(seed).unwrap();
         instance
